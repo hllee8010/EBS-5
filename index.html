@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EBS-5 · 주장파악 — Educare 분석지</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f1b2d;
+  --navy2: #162236;
+  --blue: #1a6cf6;
+  --blue-light: #e8f0ff;
+  --gold: #c9973a;
+  --gold-light: #fdf3e3;
+  --green: #1a7a4a;
+  --green-light: #e8f5ee;
+  --red: #c0392b;
+  --red-light: #fdecea;
+  --purple: #6c3483;
+  --purple-light: #f3eaff;
+  --gray1: #f7f9fc;
+  --gray2: #eef1f6;
+  --gray3: #d0d7e3;
+  --gray4: #8899b0;
+  --text: #1a2233;
+  --text2: #4a5568;
+  --white: #ffffff;
+  --shadow: 0 4px 24px rgba(15,27,45,0.10);
+  --shadow-sm: 0 2px 8px rgba(15,27,45,0.07);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--gray1);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.app-header {
+  background: var(--navy);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+}
+.app-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  color: var(--white);
+  letter-spacing: 0.02em;
+}
+.app-logo span {
+  color: var(--gold);
+}
+.app-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gray4);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── PASSAGE TABS (top) ── */
+.passage-tabs-wrap {
+  background: var(--navy2);
+  padding: 0 32px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 2px solid rgba(255,255,255,0.05);
+}
+.passage-tabs-wrap::-webkit-scrollbar { display: none; }
+
+.passage-tab {
+  flex-shrink: 0;
+  padding: 14px 22px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--gray4);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.passage-tab:hover { color: #ccd6e8; }
+.passage-tab.active {
+  color: var(--white);
+  border-bottom-color: var(--gold);
+  font-weight: 700;
+}
+
+/* ── MAIN LAYOUT ── */
+.main-wrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+
+/* ── PASSAGE PANEL ── */
+.passage-panel { display: none; }
+.passage-panel.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* passage header card */
+.passage-header {
+  background: var(--navy);
+  border-radius: 14px;
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.passage-header::before {
+  content: '';
+  position: absolute; top: 0; right: 0;
+  width: 220px; height: 100%;
+  background: linear-gradient(135deg, transparent 40%, rgba(201,151,58,0.12));
+  pointer-events: none;
+}
+.passage-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.passage-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.45rem;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.passage-topic {
+  font-size: 0.82rem;
+  color: #8899b0;
+  font-weight: 300;
+}
+
+/* ── SECTION TABS ── */
+.section-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.sec-tab {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid var(--gray3);
+  background: var(--white);
+  color: var(--text2);
+  transition: all 0.18s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.sec-tab:hover { border-color: var(--blue); color: var(--blue); }
+.sec-tab.active {
+  background: var(--blue);
+  color: var(--white);
+  border-color: var(--blue);
+  box-shadow: 0 2px 8px rgba(26,108,246,0.25);
+}
+
+/* ── SECTION PANELS ── */
+.sec-panel { display: none; }
+.sec-panel.active { display: block; animation: fadeIn 0.25s ease; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray2);
+}
+
+/* ── SENTENCE ANALYSIS ── */
+.sent-num {
+  display: inline-block;
+  width: 28px; height: 28px;
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 28px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.sent-en {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.92rem;
+  line-height: 1.8;
+  color: var(--navy);
+  background: var(--blue-light);
+  border: 1.5px solid #c0d4fc;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+}
+.sent-slash {
+  font-size: 0.83rem;
+  color: var(--text2);
+  line-height: 1.9;
+  padding: 10px 14px;
+  border-left: 3px solid var(--gray3);
+  background: var(--gray1);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 12px;
+}
+.grammar-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.grammar-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  padding: 10px 14px;
+  background: var(--gold-light);
+  border-radius: 8px;
+  border-left: 3px solid var(--gold);
+}
+.grammar-item .g-tag {
+  flex-shrink: 0;
+  background: var(--gold);
+  color: var(--white);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+.grammar-item .g-text { color: var(--text); }
+.grammar-item .g-point {
+  color: var(--red);
+  font-weight: 500;
+}
+
+/* ── GRAMMAR SUMMARY ── */
+.gram-item {
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  background: var(--white);
+  border-radius: 10px;
+  border: 1px solid var(--gray2);
+  box-shadow: var(--shadow-sm);
+}
+.gram-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.gram-no {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--blue);
+  color: var(--white);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+.gram-title { font-size: 0.92rem; font-weight: 700; color: var(--navy); }
+.gram-body { font-size: 0.83rem; color: var(--text2); line-height: 1.8; }
+.gram-evidence {
+  margin-top: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--blue);
+  background: var(--blue-light);
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+.gram-point {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--red);
+  font-weight: 500;
+}
+
+/* ── TRANSLATION ── */
+.trans-text {
+  font-size: 0.9rem;
+  line-height: 2.1;
+  color: var(--text);
+  padding: 20px 24px;
+  background: var(--gray1);
+  border-radius: 10px;
+  border: 1px solid var(--gray2);
+}
+
+/* ── TOPIC SECTION ── */
+.topic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+@media (max-width: 600px) { .topic-grid { grid-template-columns: 1fr; } }
+.topic-card {
+  padding: 18px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--gray2);
+}
+.topic-card.theme-blue { background: var(--blue-light); border-color: #c0d4fc; }
+.topic-card.theme-green { background: var(--green-light); border-color: #b7e0cb; }
+.topic-card.theme-purple { background: var(--purple-light); border-color: #d5c0f0; }
+.topic-card.theme-gold { background: var(--gold-light); border-color: #f0d9b5; }
+.topic-card-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'IBM Plex Mono', monospace;
+  margin-bottom: 6px;
+}
+.theme-blue .topic-card-label { color: var(--blue); }
+.theme-green .topic-card-label { color: var(--green); }
+.theme-purple .topic-card-label { color: var(--purple); }
+.theme-gold .topic-card-label { color: var(--gold); }
+.topic-card-body { font-size: 0.85rem; line-height: 1.7; color: var(--text); }
+
+.struct-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+.struct-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--white);
+  border-radius: 10px;
+  border: 1px solid var(--gray2);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.struct-step::after {
+  content: '↓';
+  position: absolute;
+  bottom: -18px;
+  left: 24px;
+  color: var(--gray4);
+  font-size: 1rem;
+  z-index: 1;
+}
+.struct-step:last-child::after { display: none; }
+.struct-step-num {
+  flex-shrink: 0;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.struct-step-body { font-size: 0.83rem; line-height: 1.7; color: var(--text); }
+.struct-step-role { font-size: 0.72rem; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+
+/* ── QUESTIONS ── */
+.q-block {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 22px 26px;
+  margin-bottom: 18px;
+  border: 1px solid var(--gray2);
+  box-shadow: var(--shadow-sm);
+}
+.q-type-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.badge-주제 { background: #e8f0ff; color: #1a6cf6; }
+.badge-빈칸 { background: #fdf3e3; color: #c9973a; }
+.badge-어법 { background: #fdecea; color: #c0392b; }
+.badge-불일치 { background: #e8f5ee; color: #1a7a4a; }
+.badge-순서 { background: #f3eaff; color: #6c3483; }
+.badge-서술형 { background: #fff0f5; color: #a0255f; }
+
+.q-stem {
+  font-size: 0.87rem;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+.q-passage-box {
+  font-size: 0.82rem;
+  font-family: 'IBM Plex Mono', monospace;
+  background: var(--gray1);
+  border: 1px solid var(--gray2);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  line-height: 1.8;
+  color: var(--text);
+}
+.q-options { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.q-option {
+  padding: 9px 14px;
+  border: 1.5px solid var(--gray2);
+  border-radius: 8px;
+  font-size: 0.83rem;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.q-option:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+.q-option .opt-num {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--gray2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text2);
+  font-family: 'IBM Plex Mono', monospace;
+}
+.q-option:hover .opt-num { background: var(--blue); color: var(--white); }
+
+.cond-box {
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
+  line-height: 1.7;
+}
+.cond-box span { color: var(--gold); font-weight: 700; }
+.answer-lines { margin-top: 12px; }
+.answer-line {
+  display: block;
+  height: 36px;
+  border-bottom: 1.5px solid var(--gray3);
+  margin-bottom: 8px;
+}
+
+/* ── INTERACTIVE QUIZ ── */
+.quiz-block {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 22px 26px;
+  margin-bottom: 18px;
+  border: 1px solid var(--gray2);
+  box-shadow: var(--shadow-sm);
+}
+.quiz-options { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.quiz-opt {
+  padding: 10px 16px;
+  border: 1.5px solid var(--gray3);
+  border-radius: 8px;
+  font-size: 0.84rem;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
+.quiz-opt:hover:not(.disabled) { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+.quiz-opt .opt-num {
+  flex-shrink: 0;
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--gray2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 700;
+  color: var(--text2);
+  font-family: 'IBM Plex Mono', monospace;
+  transition: all 0.15s;
+}
+.quiz-opt.correct {
+  border-color: var(--green) !important;
+  background: var(--green-light) !important;
+  color: var(--green) !important;
+}
+.quiz-opt.correct .opt-num { background: var(--green); color: var(--white); }
+.quiz-opt.wrong {
+  border-color: var(--red) !important;
+  background: var(--red-light) !important;
+  color: var(--red) !important;
+}
+.quiz-opt.wrong .opt-num { background: var(--red); color: var(--white); }
+.quiz-opt.disabled { cursor: default; pointer-events: none; }
+.quiz-opt .opt-icon { margin-left: auto; font-size: 1rem; }
+
+.quiz-exp {
+  display: none;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  animation: fadeIn 0.2s ease;
+}
+.quiz-exp.show { display: block; }
+.quiz-exp .exp-label { color: var(--gold); font-weight: 700; font-size: 0.72rem; font-family: 'IBM Plex Mono', monospace; margin-bottom: 4px; }
+
+.quiz-reset-btn {
+  display: none;
+  margin-top: 10px;
+  padding: 7px 16px;
+  border-radius: 20px;
+  border: 1.5px solid var(--gray3);
+  background: var(--white);
+  color: var(--text2);
+  font-size: 0.78rem;
+  font-family: 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.quiz-reset-btn:hover { border-color: var(--blue); color: var(--blue); }
+.quiz-reset-btn.show { display: inline-flex; align-items: center; gap: 5px; }
+
+.quiz-score-bar {
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 12px;
+  padding: 18px 24px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.quiz-score-label { font-size: 0.8rem; color: var(--gray4); font-family: 'IBM Plex Mono', monospace; }
+.quiz-score-num { font-size: 1.5rem; font-weight: 700; font-family: 'Playfair Display', serif; color: var(--gold); }
+.quiz-score-total { font-size: 0.85rem; color: var(--gray4); }
+
+/* ── ANSWER KEY ── */
+.ans-section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--navy);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--gold);
+}
+.ans-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: var(--white);
+  border: 1px solid var(--gray2);
+}
+.ans-q-label {
+  flex-shrink: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--white);
+  background: var(--navy);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.ans-answer {
+  flex-shrink: 0;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--blue);
+  min-width: 24px;
+}
+.ans-exp { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
+
+.model-ans-box {
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin-bottom: 12px;
+}
+.model-ans-box .ma-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+.model-ans-box .ma-text { font-size: 0.86rem; line-height: 1.8; }
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--gray2); margin: 20px 0; }
+
+/* ── SCROLL HINT ── */
+.scroll-hint {
+  text-align: center;
+  color: var(--gray4);
+  font-size: 0.72rem;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  padding: 10px;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="app-logo">Edu<span>care</span> 분석지</div>
+  <div class="app-badge">EBS-5 · 주장파악</div>
+</header>
+
+<!-- PASSAGE TABS -->
+<nav class="passage-tabs-wrap" id="passageTabs">
+  <button class="passage-tab active" onclick="switchPassage(0)">① 문학과 음악</button>
+  <button class="passage-tab" onclick="switchPassage(1)">② 위기 관리 전략</button>
+  <button class="passage-tab" onclick="switchPassage(2)">③ 건강 정보 신뢰성</button>
+  <button class="passage-tab" onclick="switchPassage(3)">④ 서번트 리더십</button>
+  <button class="passage-tab" onclick="switchPassage(4)">⑤ 호흡과 운동 수행</button>
+</nav>
+
+<main class="main-wrap">
+
+<!-- ═══════════════════════════════════════════
+     PASSAGE 1: 문학과 음악 가사
+════════════════════════════════════════════ -->
+<div class="passage-panel active" id="panel-0">
+  <div class="passage-header">
+    <div class="passage-num">PASSAGE 01 · 주장파악</div>
+    <div class="passage-title">문학과 현대 음악 가사</div>
+    <div class="passage-topic">Modern musical lyricists deserve recognition in literary studies</div>
+  </div>
+
+  <div class="section-tabs">
+    <button class="sec-tab active" onclick="switchSection(0,0)">① 문장분석</button>
+    <button class="sec-tab" onclick="switchSection(0,1)">② 문법총정리</button>
+    <button class="sec-tab" onclick="switchSection(0,2)">③ 전문해석</button>
+    <button class="sec-tab" onclick="switchSection(0,3)">④ 주제·구조</button>
+    <button class="sec-tab" onclick="switchSection(0,4)">⑤ 변형문제</button>
+    <button class="sec-tab" onclick="switchSection(0,5)">⑥ 정답지</button>
+  </div>
+
+  <!-- S1: 문장분석 -->
+  <div class="sec-panel active" id="p0-s0">
+    <!-- Sent 1 -->
+    <div class="card">
+      <div class="sent-num">①</div>
+      <div class="sent-en">The study of literature has repeatedly failed to recognize the influence of modern musical lyricists and their contributions to the evolution of language.</div>
+      <div class="sent-slash">문학 연구는 / 반복적으로 인식하는 데 실패해 왔다 / 현대 음악 가사 작가들의 영향력을 / 그리고 언어 발전에 대한 그들의 공헌을.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">현재완료</span><span class="g-text"><b>has repeatedly failed</b> — 「have/has + p.p.」의 계속 용법. '지금까지 반복적으로 실패해 왔다'는 의미. <br><span class="g-point">▶출제포인트: has failed vs. failed 시제 구분 / repeatedly(반복 부사)의 위치 (조동사와 본동사 사이)</span></span></li>
+        <li class="grammar-item"><span class="g-tag">to부정사(명사적)</span><span class="g-text"><b>failed to recognize</b> — fail은 to부정사만을 목적어로 취함. <br><span class="g-point">▶출제포인트: fail to-v (동명사 불가) vs. enjoy/avoid + -ing 구분</span></span></li>
+      </ul>
+    </div>
+    <!-- Sent 2 -->
+    <div class="card">
+      <div class="sent-num">②</div>
+      <div class="sent-en">Unlike Shakespeare, who has been studied and celebrated for his development of the English language, particularly in vocabulary and grammatical structure, modern songwriters have experienced restraints on the acknowledgement of their contributions and largely been ignored.</div>
+      <div class="sent-slash">셰익스피어와는 달리, / 영어의 발전으로 인해 연구되고 칭송받아 온 / 특히 어휘와 문법 구조에서, / 현대 가수들은 경험해 왔다 / 그들의 공헌에 대한 인정에 제약을 / 그리고 대체로 무시당해 왔다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">주격관계대명사</span><span class="g-text"><b>who has been studied and celebrated</b> — 선행사 Shakespeare를 수식. 수동태 현재완료 「have been + p.p.」 <br><span class="g-point">▶출제포인트: who vs. whom 구분 / 관계절 내 수동태 식별</span></span></li>
+        <li class="grammar-item"><span class="g-tag">병렬구조</span><span class="g-text"><b>studied and celebrated</b> — 두 과거분사가 and로 연결되어 동일 형태 유지. <br><span class="g-point">▶출제포인트: 병렬 요소가 모두 p.p. 형태인지 확인하는 어법 문제로 출제 가능</span></span></li>
+        <li class="grammar-item"><span class="g-tag">Unlike 전치사구</span><span class="g-text"><b>Unlike Shakespeare</b> — Unlike는 전치사로 명사(구)를 목적어로 취함. Unlike + N vs. Differently from + N <br><span class="g-point">▶출제포인트: Unlike vs. In contrast / Unlike 뒤 동사 불가</span></span></li>
+      </ul>
+    </div>
+    <!-- Sent 3 -->
+    <div class="card">
+      <div class="sent-num">③</div>
+      <div class="sent-en">Over the past century, we have witnessed an explosion of incredible literary works by these artists, who, through their music, have used linguistic manipulation and storytelling to enrich our language and literature.</div>
+      <div class="sent-slash">지난 세기에 걸쳐 / 우리는 목격해 왔다 / 엄청난 문학 작품들의 폭발적 증가를 / 이 예술가들에 의한 / 그들은 음악을 통해 / 언어 조작과 이야기 구성을 사용해 왔다 / 우리 언어와 문학을 풍요롭게 하기 위해.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">to부정사(부사적-목적)</span><span class="g-text"><b>to enrich our language</b> — '풍요롭게 하기 위해'라는 목적을 나타냄. <br><span class="g-point">▶출제포인트: in order to / so as to와 교체 가능 여부 / enriching(분사)과 혼동 주의</span></span></li>
+        <li class="grammar-item"><span class="g-tag">계속적 용법 who</span><span class="g-text"><b>who, through their music, have used</b> — 삽입어구(through their music)가 who와 동사 사이에 위치. <br><span class="g-point">▶출제포인트: 삽입어구 제거 후 구조 파악 / who → and they로 환언 가능</span></span></li>
+      </ul>
+    </div>
+    <!-- Sent 4 -->
+    <div class="card">
+      <div class="sent-num">④</div>
+      <div class="sent-en">Producing lyrics of distinct and complex imagery, songwriters have had an incredible literary impact on our language.</div>
+      <div class="sent-slash">독특하고 복잡한 심상의 가사를 만들면서 / 가수들은 우리 언어에 놀라운 문학적 영향을 미쳐 왔다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">분사구문(능동)</span><span class="g-text"><b>Producing lyrics ~</b> — 주절 주어(songwriters)와 일치. 동시 상황 또는 이유를 나타냄. = As they produce lyrics ~ <br><span class="g-point">▶출제포인트: 분사구문 vs. 접속사절 변환 / Producing vs. Having produced 시제 구분</span></span></li>
+      </ul>
+    </div>
+    <!-- Sent 5 -->
+    <div class="card">
+      <div class="sent-num">⑤</div>
+      <div class="sent-en">Their remarkable works, including influences on modern language development, must be recognized in the field of modern literature.</div>
+      <div class="sent-slash">그들의 놀라운 작품들은 / 현대 언어 발달에 대한 영향을 포함하여 / 현대 문학 분야에서 인정받아야 한다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">조동사 must(의무)</span><span class="g-text"><b>must be recognized</b> — 수동태 + 조동사. '반드시 인정받아야 한다'는 강한 의무. <br><span class="g-point">▶출제포인트: must be recognized(수동) vs. must recognize(능동) 구분 / should와 의미 차이</span></span></li>
+        <li class="grammar-item"><span class="g-tag">including 전치사</span><span class="g-text"><b>including influences on ~</b> — including은 전치사로 뒤에 명사(구). 삽입구로 주어와 동사 수 일치에 영향 없음. <br><span class="g-point">▶출제포인트: including A, B의 삽입 시 주어와 동사 수 일치 문제</span></span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- S2: 문법총정리 -->
+  <div class="sec-panel" id="p0-s1">
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">01</span><span class="gram-title">현재완료의 계속·결과 용법</span></div>
+      <div class="gram-body">has repeatedly failed(①), have witnessed(③), have had(④) 등 지문 전반에 현재완료가 반복 사용된다. 과거부터 현재까지 지속된 상황을 강조할 때 쓰인다.</div>
+      <div class="gram-evidence">has repeatedly failed / have witnessed / have used / have had</div>
+      <div class="gram-point">▶출제포인트: 현재완료 vs. 단순과거 시제 판단 / over the past century, for years 등 현재완료 신호어 식별</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">02</span><span class="gram-title">주격 관계대명사 + 수동태·계속적 용법</span></div>
+      <div class="gram-body">②문장의 who has been studied and celebrated는 선행사 Shakespeare를 수식하는 주격 관계대명사절이며, 수동태 현재완료 형태이다. ③문장의 who는 계속적 용법으로 and they로 환언 가능하다.</div>
+      <div class="gram-evidence">who has been studied and celebrated / who … have used</div>
+      <div class="gram-point">▶출제포인트: 관계절 내 수동태 식별 / 계속적 용법 관계대명사 앞 콤마 유무로 한정적·계속적 구분</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">03</span><span class="gram-title">분사구문 — 능동(동시상황/이유)</span></div>
+      <div class="gram-body">④문장의 Producing lyrics of distinct and complex imagery는 주절 주어(songwriters)와 동일 주어의 능동 분사구문이다. '~하면서'(동시) 또는 '~하기 때문에'(이유)로 해석된다.</div>
+      <div class="gram-evidence">Producing lyrics of distinct and complex imagery, songwriters have had …</div>
+      <div class="gram-point">▶출제포인트: 분사구문 주어 일치 여부 확인 / Produced(수동)와 Producing(능동) 구분</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">04</span><span class="gram-title">to부정사 — 목적 용법(부사적)</span></div>
+      <div class="gram-body">③문장에서 to enrich our language and literature는 '풍요롭게 하기 위해'라는 목적을 나타내는 부사적 to부정사이다. in order to/so as to로 교체 가능하다.</div>
+      <div class="gram-evidence">have used linguistic manipulation and storytelling to enrich</div>
+      <div class="gram-point">▶출제포인트: to부정사 목적 용법 vs. 명사적 용법 구분 / enriching(현재분사)과 혼동 주의</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">05</span><span class="gram-title">조동사 must + 수동태</span></div>
+      <div class="gram-body">⑤문장의 must be recognized는 '반드시 인정받아야 한다'는 강한 의무·당위를 나타내는 조동사 must의 수동태 구문이다. 이 문장은 지문 전체의 주장(claim)에 해당한다.</div>
+      <div class="gram-evidence">must be recognized in the field of modern literature</div>
+      <div class="gram-point">▶출제포인트: must be p.p.(수동 의무) vs. must have p.p.(과거 추측) 구분</div>
+    </div>
+  </div>
+
+  <!-- S3: 전문해석 -->
+  <div class="sec-panel" id="p0-s2">
+    <div class="card">
+      <div class="trans-text">
+        문학 연구는 현대 음악 가사 작가들의 영향력과 언어 발전에 대한 그들의 공헌을 인정하는 데 반복적으로 실패해 왔다. 특히 어휘와 문법 구조 면에서 영어 발달에 기여한 것으로 연구되고 칭송받아 온 셰익스피어와는 달리, 현대 가수들은 자신들의 공헌에 대한 인정에 제약을 받아 왔으며 대체로 무시당해 왔다. 지난 세기에 걸쳐, 우리는 이 예술가들에 의한 놀라운 문학 작품들의 폭발적 증가를 목격해 왔는데, 그들은 음악을 통해 언어적 조작과 이야기 구성을 사용하여 우리의 언어와 문학을 풍요롭게 해 왔다. 독특하고 복잡한 심상의 가사를 만들어 내면서, 가수들은 우리 언어에 놀라운 문학적 영향을 미쳐 왔다. 현대 언어 발달에 대한 영향을 포함하는 그들의 놀라운 작품들은 현대 문학 분야에서 반드시 인정받아야 한다.
+      </div>
+    </div>
+  </div>
+
+  <!-- S4: 주제·구조 -->
+  <div class="sec-panel" id="p0-s3">
+    <div class="topic-grid">
+      <div class="topic-card theme-blue">
+        <div class="topic-card-label">주제 (Topic)</div>
+        <div class="topic-card-body">현대 음악 가사 작가들의 언어·문학적 공헌이 문학 연구 분야에서 인정받아야 한다.</div>
+      </div>
+      <div class="topic-card theme-green">
+        <div class="topic-card-label">요지 (Main Claim)</div>
+        <div class="topic-card-body">문학 연구는 셰익스피어처럼 현대 가수들의 언어적 기여도 인정해야 한다.</div>
+      </div>
+      <div class="topic-card theme-gold">
+        <div class="topic-card-label">제목 (Title)</div>
+        <div class="topic-card-body">Recognizing Modern Lyricists as Literary Contributors</div>
+      </div>
+      <div class="topic-card theme-purple">
+        <div class="topic-card-label">어조 (Tone)</div>
+        <div class="topic-card-body">비판적·주장적 (Critical & Argumentative) — 학계의 편향된 인식을 지적하고 시정을 촉구</div>
+      </div>
+    </div>
+    <div class="struct-flow">
+      <div class="struct-step"><div class="struct-step-num">1</div><div class="struct-step-body"><div class="struct-step-role">문제 제기 (Problem)</div>문학 연구가 현대 음악 가사 작가들의 공헌을 반복적으로 외면해 왔음.</div></div>
+      <div class="struct-step"><div class="struct-step-num">2</div><div class="struct-step-body"><div class="struct-step-role">대조 (Contrast)</div>셰익스피어는 칭송받는 반면, 현대 가수들은 무시당해 왔음.</div></div>
+      <div class="struct-step"><div class="struct-step-num">3</div><div class="struct-step-body"><div class="struct-step-role">근거 (Evidence)</div>지난 세기 동안 가수들은 언어 조작과 스토리텔링으로 언어·문학을 실질적으로 풍요롭게 해 왔음.</div></div>
+      <div class="struct-step"><div class="struct-step-num">4</div><div class="struct-step-body"><div class="struct-step-role">주장 (Claim)</div>따라서 그들의 작품은 현대 문학 분야에서 반드시 인정받아야 한다.</div></div>
+    </div>
+  </div>
+
+  <!-- S5: 변형문제 (인터랙티브 퀴즈) -->
+  <div class="sec-panel" id="p0-s4">
+    <div class="quiz-score-bar">
+      <div><div class="quiz-score-label">정답</div><div class="quiz-score-num">0</div></div>
+      <div class="quiz-score-total">/ 0문제 완료</div>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-주제">주제추론</span>
+      <div class="q-stem">1. 다음 글의 주제로 가장 적절한 것은?</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> the decline of classical literature in the modern era<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> Shakespeare's enduring impact on the English language<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> the need to include modern lyricists in literary studies<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> how music and literature developed independently<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> the grammatical innovations introduced by pop songwriters<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문 전체가 현대 가사 작가들을 문학 연구에 포함시켜야 한다는 주장이므로 ③이 정답. ②는 지문에서 셰익스피어가 '대조'의 예로만 등장한 것을 혼동한 오답.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-빈칸">빈칸추론</span>
+      <div class="q-stem">2. 다음 빈칸에 들어갈 말로 가장 적절한 것은?</div>
+      <div class="q-passage-box">Modern songwriters have experienced restraints on the acknowledgement of their contributions and largely been ignored. Over the past century, however, they have used linguistic manipulation and storytelling to ________ our language and literature.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> simplify<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> replace<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> enrich<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> standardize<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> translate<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문 ③문장 "have used linguistic manipulation and storytelling <b>to enrich</b> our language"에서 직접 확인. simplify·replace는 문맥과 반대 방향의 의미.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-어법">어법오류</span>
+      <div class="q-stem">3. 다음 밑줄 친 부분 중 어법상 틀린 것은?</div>
+      <div class="q-passage-box">Unlike Shakespeare, ①who has been studied and celebrated for his development of the English language, modern songwriters have experienced restraints and largely ②been ignored. Over the past century, we have witnessed an explosion of incredible works by artists ③who have used linguistic manipulation ④to enrich our language. Their remarkable works must ⑤recognizing in the field of modern literature.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> who<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> been ignored<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> who<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> to enrich<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">⑤</span> recognizing<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>must be recognized(수동태)가 되어야 하는데 recognizing(능동 분사)으로 잘못 쓰였음. 주어 'Their remarkable works'는 인정받는 대상이므로 수동태 필수.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-불일치">내용불일치</span>
+      <div class="q-stem">4. 다음 글의 내용과 일치하지 않는 것은?</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> 문학 연구는 현대 음악 가사 작가들의 공헌을 반복적으로 인정하지 않아 왔다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> 셰익스피어는 어휘와 문법 구조 측면에서 영어 발전에 기여한 것으로 칭송받아 왔다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> 지난 세기 동안 예술가들은 음악을 통해 언어와 문학을 풍요롭게 해 왔다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> 가수들은 독특하고 복잡한 심상의 가사를 만들어 문학에 상당한 영향을 미쳤다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">⑤</span> 현대 음악 가사 작가들은 이미 현대 문학 분야에서 충분히 인정받고 있다.<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>본문은 '아직 인정받지 못하고 있으며 반드시 인정받아야 한다(must be recognized)'고 주장하므로, ⑤ '이미 충분히 인정받고 있다'는 불일치.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-순서">글의순서</span>
+      <div class="q-stem">5. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?</div>
+      <div class="q-passage-box">The study of literature has repeatedly failed to recognize the influence of modern musical lyricists and their contributions to the evolution of language.</div>
+      <div class="q-passage-box" style="margin-top:8px"><b>(A)</b> Producing lyrics of distinct and complex imagery, songwriters have had an incredible literary impact on our language. Their remarkable works must be recognized in the field of modern literature.<br><br><b>(B)</b> Unlike Shakespeare, who has been studied and celebrated for his development of the English language, modern songwriters have largely been ignored.<br><br><b>(C)</b> Over the past century, we have witnessed an explosion of incredible literary works by these artists, who, through their music, have used linguistic manipulation and storytelling to enrich our language.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> (A) - (B) - (C)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> (B) - (A) - (C)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> (B) - (C) - (A)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> (C) - (A) - (B)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> (C) - (B) - (A)<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>(B) 셰익스피어와의 대조(문제 제기) → (C) 지난 세기 공헌 사례(근거) → (A) 결론·주장의 흐름. (A)의 'Producing lyrics'는 (C)의 내용을 받아 정리하는 마무리 문단.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="q-block">
+      <span class="q-type-badge badge-서술형">서술형 1</span>
+      <div class="q-stem">6. 다음 빈칸을 완성하여 글의 요지를 한 문장으로 쓰시오.</div>
+      <div class="cond-box"><span>【조건】</span> 주어진 어구를 반드시 포함할 것: <b>literary contributions / modern literature</b></div>
+      <div class="q-passage-box">Modern musical lyricists' ____________ should be ____________ in the field of ____________.</div>
+      <div class="answer-lines"><span class="answer-line"></span></div>
+    </div>
+    <div class="q-block">
+      <span class="q-type-badge badge-서술형">서술형 2</span>
+      <div class="q-stem">7. 현대 가수들이 언어와 문학에 기여한 구체적인 방법 두 가지를 본문에서 찾아 우리말로 서술하시오.</div>
+      <div class="cond-box"><span>【조건】</span> 본문의 내용에 근거하여 두 가지를 각각 한 문장으로 서술할 것.</div>
+      <div class="answer-lines"><span class="answer-line"></span><span class="answer-line"></span></div>
+    </div>
+  </div>
+
+  <!-- S6: 정답지 -->
+  <div class="sec-panel" id="p0-s5">
+    <div class="ans-section-title">변형문제 정답 및 해설</div>
+    <div class="ans-row"><span class="ans-q-label">Q1</span><span class="ans-answer">③</span><span class="ans-exp">지문 전체가 현대 가사 작가들을 문학 연구에 포함시켜야 한다는 주장이므로 ③이 정답.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q2</span><span class="ans-answer">③</span><span class="ans-exp">to enrich our language — 지문 ③문장의 to enrich가 그대로 답. simplify/replace는 문맥상 반의미.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q3</span><span class="ans-answer">⑤</span><span class="ans-exp">must be recognized(수동태)가 되어야 하는데 recognizing(능동 분사)으로 잘못 쓰였음.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q4</span><span class="ans-answer">⑤</span><span class="ans-exp">본문은 '아직 인정받지 못하고 있다'는 내용이므로 '이미 충분히 인정받고 있다'는 ⑤가 불일치.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q5</span><span class="ans-answer">③</span><span class="ans-exp">(B) 셰익스피어 대조 → (C) 지난 세기 공헌 → (A) 결론·주장의 흐름이 자연스러움.</span></div>
+    <div class="divider"></div>
+    <div class="ans-section-title">서술형 모범답안</div>
+    <div class="model-ans-box">
+      <div class="ma-label">서술형 1</div>
+      <div class="ma-text">Modern musical lyricists' literary contributions should be recognized in the field of modern literature.</div>
+    </div>
+    <div class="model-ans-box">
+      <div class="ma-label">서술형 2</div>
+      <div class="ma-text">① 가수들은 언어적 조작(linguistic manipulation)과 이야기 구성(storytelling)을 통해 언어와 문학을 풍요롭게 했다.<br>② 독특하고 복잡한 심상의 가사(lyrics of distinct and complex imagery)를 만들어 우리 언어에 문학적 영향을 미쳤다.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PASSAGE 2: 위기 관리
+════════════════════════════════════════════ -->
+<div class="passage-panel" id="panel-1">
+  <div class="passage-header">
+    <div class="passage-num">PASSAGE 02 · 주장파악</div>
+    <div class="passage-title">위기 관리와 통제 가능성</div>
+    <div class="passage-topic">Focus on controllable aspects to overcome large-scale crises</div>
+  </div>
+  <div class="section-tabs">
+    <button class="sec-tab active" onclick="switchSection(1,0)">① 문장분석</button>
+    <button class="sec-tab" onclick="switchSection(1,1)">② 문법총정리</button>
+    <button class="sec-tab" onclick="switchSection(1,2)">③ 전문해석</button>
+    <button class="sec-tab" onclick="switchSection(1,3)">④ 주제·구조</button>
+    <button class="sec-tab" onclick="switchSection(1,4)">⑤ 변형문제</button>
+    <button class="sec-tab" onclick="switchSection(1,5)">⑥ 정답지</button>
+  </div>
+  <div class="sec-panel active" id="p1-s0">
+    <div class="card">
+      <div class="sent-num">①</div>
+      <div class="sent-en">Many crises today, such as the Great Recession, are simply too big and too overwhelming for you to completely comprehend, much less control.</div>
+      <div class="sent-slash">오늘날 많은 위기들은, / 대공황 같은, / 단순히 너무 크고 너무 압도적이어서 / 당신이 완전히 이해할 수 없으며, / 통제하기는 더더욱 어렵다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">too ~ to 구문</span><span class="g-text"><b>too big and too overwhelming for you to comprehend</b> — 「too + 형용사 + for + 목적어 + to-v」= '~가 …하기에는 너무 ~하다'. <br><span class="g-point">▶출제포인트: for you의 의미상 주어 / to comprehend(부정) vs. to be comprehended(수동) 구분</span></span></li>
+        <li class="grammar-item"><span class="g-tag">much less (부정어 강조)</span><span class="g-text"><b>much less control</b> — 부정문 뒤에 쓰여 '~은 더더욱 아니다'의 의미. = let alone, still less <br><span class="g-point">▶출제포인트: much less vs. much more 혼동 / 앞에 부정어가 있어야 사용 가능</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">②</div>
+      <div class="sent-en">Crises of this ilk are precisely the kind that can easily engulf you with destructive reactions that interfere with your ability to overcome them.</div>
+      <div class="sent-slash">이런 종류의 위기들은 / 정확히 당신을 삼켜버릴 수 있는 종류이다 / 파괴적인 반응들로 / 당신의 극복 능력을 방해하는.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">관계대명사 that (이중)</span><span class="g-text">that can easily engulf — 선행사 the kind 수식. that interfere — 선행사 reactions 수식. <br><span class="g-point">▶출제포인트: 두 개의 that절 각각의 선행사 파악 / interfere with = 방해하다</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">③</div>
+      <div class="sent-en">Focusing on these oversized crises will exacerbate the natural psychological, emotional, and physical reactions you are going to experience.</div>
+      <div class="sent-slash">이 거대한 위기들에 집중하는 것은 / 악화시킬 것이다 / 당신이 겪게 될 / 자연스러운 심리적, 감정적, 신체적 반응들을.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">동명사 주어</span><span class="g-text"><b>Focusing on these oversized crises</b>가 주어 → 단수 동사 will exacerbate. <br><span class="g-point">▶출제포인트: 동명사 주어는 단수 취급 / Focusing vs. To Focus 교체 가능 여부</span></span></li>
+        <li class="grammar-item"><span class="g-tag">목적격 관계대명사 생략</span><span class="g-text"><b>reactions (that/which) you are going to experience</b> — 목적격 관계대명사 생략. <br><span class="g-point">▶출제포인트: 관계대명사 생략 가능 조건 — 목적격일 때만 가능</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">④</div>
+      <div class="sent-en">With these sorts of crises, your best chance is to identify those aspects that are within your control.</div>
+      <div class="sent-slash">이런 종류의 위기들에 있어서, / 당신의 최선의 방법은 / 당신의 통제 범위 내에 있는 / 그 측면들을 파악하는 것이다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">주격보어 to부정사</span><span class="g-text"><b>is to identify</b> — 주어(your best chance) + be동사 + to부정사(보어). '~하는 것이다' <br><span class="g-point">▶출제포인트: 주격보어 to부정사 vs. 형용사 보어 구분</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">⑤</div>
+      <div class="sent-en">Then, you can break down the bigger crisis into smaller, more manageable problems toward which you can direct your energy and find solutions.</div>
+      <div class="sent-slash">그런 다음, / 당신은 더 큰 위기를 나눌 수 있다 / 더 작고, 더 관리하기 쉬운 문제들로 / 그것들을 향해 당신은 에너지를 쏟고 해결책을 찾을 수 있는.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">전치사+관계대명사</span><span class="g-text"><b>toward which you can direct</b> — 전치사 toward가 관계대명사 which 앞으로 이동. = problems which you can direct your energy toward. <br><span class="g-point">▶출제포인트: 전치사+관계대명사 구조 / 전치사 뒤에 that 불가 (which만 가능)</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">⑥</div>
+      <div class="sent-en">For example, think back to the Great Recession. Although you probably didn't have the ability to influence economic policy, you were able to revisit the distribution of your investments and choose to create a more diverse portfolio.</div>
+      <div class="sent-slash">예를 들어, / 대공황을 돌이켜 생각해 보라. / 비록 당신이 경제 정책에 영향을 미칠 능력은 없었을지라도, / 당신은 투자 배분을 재검토하고 / 더 다양한 포트폴리오를 만들기로 선택할 수 있었다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">양보 접속사 Although</span><span class="g-text"><b>Although you didn't have ~ , you were able to</b> — 양보절과 주절의 대조 관계. = Even though / Though <br><span class="g-point">▶출제포인트: although vs. despite/in spite of(전치사) 혼동 주의 / although 뒤에는 절(S+V) 필요</span></span></li>
+        <li class="grammar-item"><span class="g-tag">choose to-v / be able to-v</span><span class="g-text"><b>choose to create / were able to revisit</b> — choose는 to부정사, be able to는 조동사 역할. <br><span class="g-point">▶출제포인트: choose to-v(동명사 불가) / be able to vs. can의 시제 제약 차이</span></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="sec-panel" id="p1-s1">
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">01</span><span class="gram-title">too ~ to 구문 (의미상 주어 for + 목적격)</span></div>
+      <div class="gram-body">①문장의 too big and too overwhelming for you to comprehend는 '당신이 이해하기에는 너무 크고 압도적이다'는 의미. for you가 to부정사의 의미상 주어.</div>
+      <div class="gram-evidence">too big and too overwhelming for you to completely comprehend</div>
+      <div class="gram-point">▶출제포인트: so ~ that 구문으로 전환 가능 / for 목적격 유무에 따른 해석 변화</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">02</span><span class="gram-title">much less (부정어 강조 표현)</span></div>
+      <div class="gram-body">①문장의 much less control은 부정문 뒤에서 '통제하기는 더더욱 어렵다'는 의미를 더한다. let alone, still less와 동의어이며, 반드시 부정문 뒤에 사용.</div>
+      <div class="gram-evidence">cannot comprehend, much less control</div>
+      <div class="gram-point">▶출제포인트: much more(긍정문 강조)와 혼동 주의 / 앞 문장에 부정어 필수</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">03</span><span class="gram-title">동명사 주어 + 단수 동사</span></div>
+      <div class="gram-body">③문장에서 Focusing on these oversized crises가 주어이고 단수 동사 will exacerbate를 취한다. 동명사구 주어는 길이에 상관없이 항상 단수 취급.</div>
+      <div class="gram-evidence">Focusing on these oversized crises will exacerbate …</div>
+      <div class="gram-point">▶출제포인트: 동명사 주어 + 단수 동사 / To focus(to부정사 주어)도 단수 동사 취급</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">04</span><span class="gram-title">전치사 + 관계대명사 (toward which)</span></div>
+      <div class="gram-body">⑤문장의 toward which you can direct your energy는 전치사가 관계대명사 앞으로 이동한 구조. 이때 관계대명사는 that 불가, which만 사용.</div>
+      <div class="gram-evidence">problems toward which you can direct your energy</div>
+      <div class="gram-point">▶출제포인트: 전치사+관계대명사 → that으로 교체 불가 / 구어체에서는 전치사를 절 끝에 남기기도 함</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">05</span><span class="gram-title">although (양보) vs. despite/in spite of (전치사)</span></div>
+      <div class="gram-body">⑥문장의 Although you didn't have the ability처럼 although는 뒤에 절(S+V)이 온다. despite/in spite of는 전치사로 뒤에 명사(구)가 온다.</div>
+      <div class="gram-evidence">Although you probably didn't have the ability to influence economic policy</div>
+      <div class="gram-point">▶출제포인트: although + S+V / despite + N(구) — 둘의 교체 조건 어법 문제로 출제 빈출</div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p1-s2">
+    <div class="card">
+      <div class="trans-text">오늘날 대공황 같은 많은 위기들은 단순히 너무 크고 압도적이어서 완전히 이해하기 어려우며, 통제하기는 더더욱 불가능하다. 이런 종류의 위기들은 당신을 삼켜버려 위기 극복 능력을 방해하는 파괴적인 반응들을 유발하기 쉬운 바로 그런 종류이다. 이러한 거대한 위기들에 집중하는 것은 당신이 겪게 될 심리적, 감정적, 신체적 반응들을 자연스럽게 악화시킬 것이다. 이런 종류의 위기들에서 최선의 방법은 당신의 통제 범위 내에 있는 측면들을 파악하는 것이다. 그런 다음, 더 큰 위기를 당신이 에너지를 집중하여 해결책을 찾을 수 있는 더 작고 관리 가능한 문제들로 나눌 수 있다. 예를 들어, 대공황을 생각해 보라. 비록 경제 정책에 영향을 미치지는 못했을지라도, 투자 배분을 재검토하고 더 다양한 포트폴리오를 구성하기로 선택할 수는 있었다.</div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p1-s3">
+    <div class="topic-grid">
+      <div class="topic-card theme-blue"><div class="topic-card-label">주제</div><div class="topic-card-body">대규모 위기 상황에서 통제 가능한 부분에 집중하여 위기를 극복해야 한다.</div></div>
+      <div class="topic-card theme-green"><div class="topic-card-label">요지</div><div class="topic-card-body">압도적인 위기는 통제 가능한 측면을 찾아 작게 나누어 접근하는 것이 최선이다.</div></div>
+      <div class="topic-card theme-gold"><div class="topic-card-label">제목</div><div class="topic-card-body">Breaking Down Big Crises: Focus on What You Can Control</div></div>
+      <div class="topic-card theme-purple"><div class="topic-card-label">어조</div><div class="topic-card-body">충고적·실용적 (Advisory & Pragmatic) — 독자에게 실질적 위기 대처법 제시</div></div>
+    </div>
+    <div class="struct-flow">
+      <div class="struct-step"><div class="struct-step-num">1</div><div class="struct-step-body"><div class="struct-step-role">문제 제시</div>대규모 위기는 이해·통제가 불가능하며 파괴적 반응을 유발함.</div></div>
+      <div class="struct-step"><div class="struct-step-num">2</div><div class="struct-step-body"><div class="struct-step-role">주장</div>통제 가능한 측면을 찾아 큰 위기를 작은 문제들로 분해할 것.</div></div>
+      <div class="struct-step"><div class="struct-step-num">3</div><div class="struct-step-body"><div class="struct-step-role">구체적 예시</div>대공황 시 투자 포트폴리오 재조정 — 통제 가능한 행동의 실제 사례.</div></div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p1-s4">
+    <div class="quiz-score-bar">
+      <div><div class="quiz-score-label">정답</div><div class="quiz-score-num">0</div></div>
+      <div class="quiz-score-total">/ 0문제 완료</div>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-주제">주제추론</span>
+      <div class="q-stem">1. 다음 글의 주제로 가장 적절한 것은?</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> economic policies to prevent large-scale recessions<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> how to identify the root causes of financial crises<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> the importance of focusing on controllable aspects in overwhelming crises<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> psychological effects of economic downturns on individuals<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> strategies for influencing government economic decision-making<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문 전체의 핵심은 '통제 가능한 측면에 집중하여 큰 위기를 작게 나눠라'이므로 ③이 정답. ④는 심리적 반응이 언급되지만 핵심 주제는 아님.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-빈칸">빈칸추론</span>
+      <div class="q-stem">2. 다음 빈칸에 들어갈 말로 가장 적절한 것은?</div>
+      <div class="q-passage-box">With these sorts of crises, your best chance is to identify those aspects that are within your control. Then, you can ________ the bigger crisis into smaller, more manageable problems.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> ignore<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">②</span> break down<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> build up<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> give up on<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> reflect on<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문 ⑤문장 "break down the bigger crisis into smaller, more manageable problems"에서 직접 확인. build up(쌓아올리다)은 문맥상 반의미.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-어법">어법오류</span>
+      <div class="q-stem">3. 다음 밑줄 친 부분 중 어법상 틀린 것은?</div>
+      <div class="q-passage-box">Many crises today are ①simply too big for you to completely comprehend, much less ②controlling. ③Focusing on these oversized crises will exacerbate the natural reactions you are going to experience. With these sorts of crises, your best chance ④is to identify aspects within your control. Although you didn't have the ability ⑤to influence economic policy, you were able to revisit your investments.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> simply<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">②</span> controlling<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> Focusing<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> is<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> to influence<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>much less 뒤에는 동사원형이 와야 함. 「cannot comprehend, much less <b>control</b>」이 올바른 형태. controlling(동명사)으로 쓰면 병렬 불일치.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-불일치">내용불일치</span>
+      <div class="q-stem">4. 다음 글의 내용과 일치하지 않는 것은?</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> 대공황 같은 위기는 완전히 이해하거나 통제하기 어렵다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> 거대한 위기에 집중하면 심리적·신체적 반응이 악화될 수 있다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> 위기 극복의 최선은 통제 가능한 측면을 파악하는 것이다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">④</span> 대공황 당시 개인은 경제 정책에 영향을 미칠 수 있었다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> 큰 위기를 작은 문제들로 나누면 해결책을 찾는 데 도움이 된다.<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문 ⑥에서 "you probably didn't have the ability to influence economic policy"라고 명시 → ④ '영향을 미칠 수 있었다'는 불일치.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-순서">글의순서</span>
+      <div class="q-stem">5. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?</div>
+      <div class="q-passage-box">Many crises today, such as the Great Recession, are simply too big and too overwhelming for you to completely comprehend, much less control.</div>
+      <div class="q-passage-box" style="margin-top:8px"><b>(A)</b> With these sorts of crises, your best chance is to identify those aspects that are within your control. Then, you can break down the bigger crisis into smaller, more manageable problems.<br><br><b>(B)</b> Crises of this ilk are precisely the kind that can easily engulf you with destructive reactions that interfere with your ability to overcome them.<br><br><b>(C)</b> For example, think back to the Great Recession. Although you probably didn't have the ability to influence economic policy, you were able to revisit the distribution of your investments.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> (A) - (B) - (C)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> (A) - (C) - (B)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> (B) - (A) - (C)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> (B) - (C) - (A)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> (C) - (B) - (A)<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>(B) 위기의 위험성 부연 → (A) 해결 전략 제시(통제 가능 측면 파악) → (C) 대공황 구체 예시 순서. (B)의 'Crises of this ilk'가 앞의 '위기들'을 받음.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="q-block">
+      <span class="q-type-badge badge-서술형">서술형 1</span>
+      <div class="q-stem">6. 다음 빈칸을 채워 글의 요지를 완성하시오.</div>
+      <div class="cond-box"><span>【조건】</span> 본문의 어휘를 활용하여 영어로 쓸 것</div>
+      <div class="q-passage-box">When facing overwhelming crises, the best strategy is to ________ those aspects that are within your ________ and break the bigger crisis into ________ problems.</div>
+      <div class="answer-lines"><span class="answer-line"></span></div>
+    </div>
+    <div class="q-block">
+      <span class="q-type-badge badge-서술형">서술형 2</span>
+      <div class="q-stem">7. 대공황을 예시로 들어, 필자가 제시하는 위기 대처 전략을 우리말로 구체적으로 서술하시오.</div>
+      <div class="cond-box"><span>【조건】</span> '통제 가능한 부분'과 '구체적 행동' 두 요소를 포함하여 2문장으로 쓸 것.</div>
+      <div class="answer-lines"><span class="answer-line"></span><span class="answer-line"></span></div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p1-s5">
+    <div class="ans-section-title">변형문제 정답 및 해설</div>
+    <div class="ans-row"><span class="ans-q-label">Q1</span><span class="ans-answer">③</span><span class="ans-exp">통제 가능한 부분에 집중하라는 주장이 핵심이므로 ③이 정답.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q2</span><span class="ans-answer">②</span><span class="ans-exp">break down(분해하다) — 지문 ⑤문장 break down the bigger crisis into smaller problems에서 직접 확인.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q3</span><span class="ans-answer">②</span><span class="ans-exp">much less 뒤에는 동사원형이 와야 함. controlling → control로 수정해야 함.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q4</span><span class="ans-answer">④</span><span class="ans-exp">본문에서 '경제 정책에 영향을 미칠 능력은 없었다'고 서술하므로 ④가 불일치.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q5</span><span class="ans-answer">③</span><span class="ans-exp">(B) 위기의 위험성 → (A) 해결 전략(통제 가능한 측면 파악) → (C) 대공황 예시 순서.</span></div>
+    <div class="divider"></div>
+    <div class="ans-section-title">서술형 모범답안</div>
+    <div class="model-ans-box"><div class="ma-label">서술형 1</div><div class="ma-text">identify / control / smaller (more manageable)</div></div>
+    <div class="model-ans-box"><div class="ma-label">서술형 2</div><div class="ma-text">대공황 당시 경제 정책에 영향을 미치는 것은 통제 불가능했지만, 투자 배분을 재검토하는 것은 통제 가능한 영역이었다. 필자는 이처럼 자신이 통제할 수 있는 구체적인 행동(포트폴리오 다양화)에 집중하는 것이 최선의 위기 대처 전략임을 주장한다.</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PASSAGE 3: 건강 정보 신뢰성
+════════════════════════════════════════════ -->
+<div class="passage-panel" id="panel-2">
+  <div class="passage-header">
+    <div class="passage-num">PASSAGE 03 · 주장파악</div>
+    <div class="passage-title">건강 정보와 신뢰할 수 있는 출처</div>
+    <div class="passage-topic">Use reliable sources for health and nutrition information</div>
+  </div>
+  <div class="section-tabs">
+    <button class="sec-tab active" onclick="switchSection(2,0)">① 문장분석</button>
+    <button class="sec-tab" onclick="switchSection(2,1)">② 문법총정리</button>
+    <button class="sec-tab" onclick="switchSection(2,2)">③ 전문해석</button>
+    <button class="sec-tab" onclick="switchSection(2,3)">④ 주제·구조</button>
+    <button class="sec-tab" onclick="switchSection(2,4)">⑤ 변형문제</button>
+    <button class="sec-tab" onclick="switchSection(2,5)">⑥ 정답지</button>
+  </div>
+  <div class="sec-panel active" id="p2-s0">
+    <div class="card">
+      <div class="sent-num">①</div>
+      <div class="sent-en">Consumer surveys indicate that the majority of Americans (91%) believe they have some control over their health, and 72% believe that food and nutrition play the greatest role.</div>
+      <div class="sent-slash">소비자 조사는 나타낸다 / 미국인의 대다수(91%)가 믿는다는 것을 / 자신들의 건강에 어느 정도 통제력을 갖고 있다고 / 그리고 72%는 믿는다 / 음식과 영양이 가장 큰 역할을 한다고.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">동격 that절</span><span class="g-text"><b>indicate that ~ / believe that ~</b> — 동사(indicate, believe) 뒤 that은 명사절 접속사. <br><span class="g-point">▶출제포인트: that 명사절 vs. 관계대명사 that 구분 / believe that절에서 they have (not they has) 수 일치</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">②</div>
+      <div class="sent-en">However, 75% of consumers rely on media outlets including the Internet as their major sources of health and nutrition information, and only half use medical sources.</div>
+      <div class="sent-slash">그러나, / 소비자의 75%는 의존한다 / 인터넷을 포함한 미디어 매체에 / 건강과 영양 정보의 주요 출처로서 / 그리고 오직 절반만이 의료적 출처를 이용한다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">현재분사(후치수식)</span><span class="g-text"><b>media outlets including the Internet</b> — including은 현재분사로 명사 뒤에서 수식. <br><span class="g-point">▶출제포인트: including(전치사) vs. included(과거분사) 혼동 주의 / including 뒤에는 명사 목적어</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">③</div>
+      <div class="sent-en">A Google search for "nutrition listservs" yielded over 100,000 sites, but it is likely that many of these writings are not reviewed by nutrition experts.</div>
+      <div class="sent-slash">구글 검색에서 "영양 목록 서비스"로 / 10만 개 이상의 사이트가 검색되었다 / 하지만 ~일 가능성이 높다 / 이 글들 중 많은 것들이 / 영양 전문가들에 의해 검토되지 않은.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">가주어 it ~ that절</span><span class="g-text"><b>it is likely that many of these writings are not reviewed</b> — 가주어 it, 진주어 that절. <br><span class="g-point">▶출제포인트: it is likely that ~ vs. be likely to-v / 수동태 are not reviewed 식별</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">④</div>
+      <div class="sent-en">Internet sites marketing herbs, drugs, and health devices are not monitored by government regulatory agencies and often contain misleading information.</div>
+      <div class="sent-slash">약초, 의약품, 건강 기기를 판매하는 인터넷 사이트들은 / 정부 규제 기관들에 의해 모니터링되지 않으며 / 종종 오해를 불러일으키는 정보를 담고 있다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">현재분사(주어 후치수식)</span><span class="g-text"><b>Internet sites marketing herbs, drugs, and health devices</b> — marketing이 주어 Internet sites를 후치수식하는 현재분사구. <br><span class="g-point">▶출제포인트: 분사 후치수식의 능동(marketing)·수동(marketed) 구분 / 핵심 주어 sites + 복수 동사 are</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">⑤</div>
+      <div class="sent-en">Reputable food companies provide helpful facts about the nutrient content of their products, but commercial sites devoted to sales often post misleading health claims.</div>
+      <div class="sent-slash">평판 좋은 식품 회사들은 / 유용한 사실들을 제공한다 / 제품의 영양 성분에 대한 / 하지만 판매에 치중한 상업 사이트들은 / 종종 오해를 불러일으키는 건강 주장들을 게시한다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">과거분사(후치수식)</span><span class="g-text"><b>commercial sites devoted to sales</b> — devoted는 과거분사로 sites를 수식. = commercial sites which are devoted to sales. <br><span class="g-point">▶출제포인트: devoting(능동) vs. devoted(수동) 분사 선택 문제</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">⑥</div>
+      <div class="sent-en">Internet sites maintained by government agencies, universities, state extension services, and medical facilities provide evidence-based information and should be the first source for public information on foods, nutrition, and health.</div>
+      <div class="sent-slash">정부 기관, 대학교, 주립 확장 서비스, 의료 시설에 의해 운영되는 인터넷 사이트들은 / 증거 기반의 정보를 제공하며 / 음식, 영양, 건강에 관한 공공 정보의 첫 번째 출처가 되어야 한다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">과거분사(후치수식)</span><span class="g-text"><b>Internet sites maintained by government agencies</b> — maintained는 sites를 수식하는 수동 분사. = sites which are maintained by ~ <br><span class="g-point">▶출제포인트: maintaining(능동) vs. maintained(수동) 구분 / 병렬 구조: provide ~ and should be ~</span></span></li>
+        <li class="grammar-item"><span class="g-tag">조동사 should (충고·당위)</span><span class="g-text"><b>should be the first source</b> — '~이어야 한다'는 당위. 지문 필자의 핵심 주장 문장. <br><span class="g-point">▶출제포인트: should be p.p. vs. should be + 보어 구분</span></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="sec-panel" id="p2-s1">
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">01</span><span class="gram-title">명사절 접속사 that (동사 목적어)</span></div>
+      <div class="gram-body">①문장의 indicate that ~, believe that ~은 모두 동사의 목적어 역할을 하는 명사절이다. 관계대명사 that과 달리, 접속사 that 뒤에는 완전한 절이 온다.</div>
+      <div class="gram-evidence">indicate that the majority ~ believe / believe that food and nutrition play</div>
+      <div class="gram-point">▶출제포인트: 접속사 that(완전한 절) vs. 관계대명사 that(불완전한 절) 구분</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">02</span><span class="gram-title">가주어 it ~ that 진주어절</span></div>
+      <div class="gram-body">③문장의 it is likely that many of these writings are not reviewed에서 it은 형식상의 가주어이고, that 이하가 진주어이다. it is + 형용사(likely/important/necessary 등) + that 구조.</div>
+      <div class="gram-evidence">it is likely that many of these writings are not reviewed by nutrition experts</div>
+      <div class="gram-point">▶출제포인트: 가주어 it vs. 지시대명사 it 구분 / it is likely that ~ = be likely to-v로 전환</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">03</span><span class="gram-title">현재분사 vs. 과거분사 후치수식</span></div>
+      <div class="gram-body">④문장의 sites marketing herbs(능동-현재분사), ⑤문장의 sites devoted to sales(수동-과거분사), ⑥문장의 sites maintained by agencies(수동-과거분사)가 모두 등장해 비교 출제에 적합하다.</div>
+      <div class="gram-evidence">sites marketing / sites devoted / sites maintained</div>
+      <div class="gram-point">▶출제포인트: 명사와 분사의 능동·수동 관계 파악 → 능동이면 현재분사, 수동이면 과거분사</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">04</span><span class="gram-title">수동태 — be동사 + p.p.</span></div>
+      <div class="gram-body">③의 are not reviewed, ④의 are not monitored, ⑥의 maintained by ~ 등 지문 전반에 수동태가 반복된다. 특히 by + 행위자가 명시된 경우 출제 포인트.</div>
+      <div class="gram-evidence">are not reviewed by nutrition experts / are not monitored by government regulatory agencies</div>
+      <div class="gram-point">▶출제포인트: 능동태↔수동태 전환 / by 행위자 생략 여부 판단</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">05</span><span class="gram-title">조동사 should (당위·권고) — 필자의 주장</span></div>
+      <div class="gram-body">⑥문장의 should be the first source는 필자가 독자에게 권고하는 핵심 주장이다. should는 '~해야 한다'는 당위·권고를 나타내며, must보다 부드러운 의무감을 전달한다.</div>
+      <div class="gram-evidence">should be the first source for public information on foods, nutrition, and health</div>
+      <div class="gram-point">▶출제포인트: should(당위) vs. must(강한 의무) vs. may(가능성) 조동사 뉘앙스 비교</div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p2-s2">
+    <div class="card"><div class="trans-text">소비자 조사에 따르면 미국인의 대다수(91%)가 자신의 건강에 어느 정도 통제력이 있다고 믿으며, 72%는 음식과 영양이 가장 큰 역할을 한다고 생각한다. 그러나 소비자의 75%는 인터넷을 포함한 미디어 매체를 건강·영양 정보의 주요 출처로 의존하고, 오직 절반만이 의료 출처를 활용한다. 구글에서 "영양 목록 서비스"를 검색하면 10만 개 이상의 사이트가 나오지만, 이 글들 중 많은 부분이 영양 전문가의 검토를 받지 않았을 가능성이 높다. 약초, 의약품, 건강 기기를 판매하는 인터넷 사이트들은 정부 규제 기관의 모니터링을 받지 않으며 오해를 불러일으키는 정보를 담고 있는 경우가 많다. 평판 좋은 식품 회사들은 제품의 영양 성분에 관한 유용한 정보를 제공하지만, 판매에 치중한 상업 사이트들은 종종 오해를 부르는 건강 주장을 게시한다. 정부 기관, 대학, 주립 확장 서비스, 의료 시설이 운영하는 인터넷 사이트들은 증거 기반의 정보를 제공하므로 음식, 영양, 건강에 관한 공공 정보의 첫 번째 출처가 되어야 한다.</div></div>
+  </div>
+  <div class="sec-panel" id="p2-s3">
+    <div class="topic-grid">
+      <div class="topic-card theme-blue"><div class="topic-card-label">주제</div><div class="topic-card-body">건강·영양 정보를 얻을 때 신뢰할 수 있는 기관 기반의 출처를 우선 활용해야 한다.</div></div>
+      <div class="topic-card theme-green"><div class="topic-card-label">요지</div><div class="topic-card-body">정부·대학·의료 기관 사이트가 음식과 건강 정보의 첫 번째 출처가 되어야 한다.</div></div>
+      <div class="topic-card theme-gold"><div class="topic-card-label">제목</div><div class="topic-card-body">Trust Evidence-Based Sources for Health Information Online</div></div>
+      <div class="topic-card theme-purple"><div class="topic-card-label">어조</div><div class="topic-card-body">경고적·권고적 (Cautionary & Advisory) — 온라인 건강 정보의 위험성 경고 후 대안 제시</div></div>
+    </div>
+    <div class="struct-flow">
+      <div class="struct-step"><div class="struct-step-num">1</div><div class="struct-step-body"><div class="struct-step-role">현황 제시</div>대다수 미국인이 미디어·인터넷을 통해 건강 정보를 얻음.</div></div>
+      <div class="struct-step"><div class="struct-step-num">2</div><div class="struct-step-body"><div class="struct-step-role">문제 제기</div>인터넷의 많은 건강 정보가 전문가 검토 없이 오해를 유발.</div></div>
+      <div class="struct-step"><div class="struct-step-num">3</div><div class="struct-step-body"><div class="struct-step-role">대조</div>평판 식품 기업 vs. 판매 목적 상업 사이트의 정보 신뢰도 차이.</div></div>
+      <div class="struct-step"><div class="struct-step-num">4</div><div class="struct-step-body"><div class="struct-step-role">주장</div>정부·대학·의료 기관 사이트를 첫 번째 건강 정보 출처로 삼아야 함.</div></div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p2-s4">
+    <div class="quiz-score-bar">
+      <div><div class="quiz-score-label">정답</div><div class="quiz-score-num">0</div></div>
+      <div class="quiz-score-total">/ 0문제 완료</div>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-주제">주제추론</span>
+      <div class="q-stem">1. 다음 글의 주제로 가장 적절한 것은?</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> the growing popularity of online health communities<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">②</span> the need to rely on credible, evidence-based health information sources<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> how food companies market nutritional products online<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> the role of government agencies in regulating food advertising<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> the increasing influence of social media on consumer behavior<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>마지막 문장의 핵심 주장 "should be the first source"에서 확인. 신뢰할 수 있는 증거 기반 출처 활용을 권고하는 것이 핵심 → ②.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-빈칸">빈칸추론</span>
+      <div class="q-stem">2. 다음 빈칸에 들어갈 말로 가장 적절한 것은?</div>
+      <div class="q-passage-box">Internet sites maintained by government agencies, universities, and medical facilities provide ________ information and should be the first source for public information on foods, nutrition, and health.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> commercially popular<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">②</span> evidence-based<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> easily accessible<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> government-funded<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> frequently updated<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문 마지막 문장 "provide <b>evidence-based</b> information"에서 직접 확인. 상업 사이트의 'misleading'과 대조되는 핵심 키워드.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-어법">어법오류</span>
+      <div class="q-stem">3. 다음 밑줄 친 부분 중 어법상 틀린 것은?</div>
+      <div class="q-passage-box">①It is likely that many Internet writings are not reviewed by nutrition experts. Internet sites ②marketing herbs and health devices are not monitored and often contain misleading information. Commercial sites ③devoted to sales often post misleading claims. Reputable companies, however, provide ④helpfully facts about nutrient content. Sites ⑤maintained by government agencies should be the first source for health information.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> It is likely that<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> marketing<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> devoted<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">④</span> helpfully<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> maintained<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>provide + 형용사 + 명사(facts) 구조 → 부사 helpfully가 아닌 형용사 <b>helpful</b>이 되어야 함. 부사는 명사를 수식할 수 없음.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-불일치">내용불일치</span>
+      <div class="q-stem">4. 다음 글의 내용과 일치하지 않는 것은?</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> 미국인의 91%는 자신의 건강에 어느 정도 통제력이 있다고 믿는다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> 소비자의 75%는 미디어를 건강 정보의 주요 출처로 활용한다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> 약초나 건강 기기를 판매하는 사이트들은 정부 기관의 모니터링을 받는다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> 평판 좋은 식품 회사들은 제품의 영양 성분에 대한 유용한 정보를 제공한다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> 대학과 의료 시설이 운영하는 사이트는 증거에 기반한 정보를 제공한다.<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문 ④문장 "are <b>not</b> monitored by government regulatory agencies"라고 명시 → ③ '모니터링을 받는다'는 불일치.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-순서">글의순서</span>
+      <div class="q-stem">5. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?</div>
+      <div class="q-passage-box">Consumer surveys indicate that the majority of Americans believe they have some control over their health, and 72% believe that food and nutrition play the greatest role.</div>
+      <div class="q-passage-box" style="margin-top:8px"><b>(A)</b> Reputable food companies provide helpful facts about nutrient content, but commercial sites devoted to sales often post misleading health claims. Internet sites maintained by government agencies should be the first source for public information.<br><br><b>(B)</b> However, 75% of consumers rely on media outlets including the Internet as their major sources of health information, and only half use medical sources.<br><br><b>(C)</b> A Google search yielded over 100,000 sites, but many writings are not reviewed by nutrition experts. Internet sites marketing herbs and health devices are not monitored and often contain misleading information.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> (A) - (B) - (C)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> (B) - (A) - (C)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> (B) - (C) - (A)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> (C) - (B) - (A)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> (C) - (A) - (B)<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>(B) 미디어 의존 현황(문제 도입) → (C) 구체적 문제점(검토 미비·오류 정보) → (A) 해결책(신뢰 가능 사이트 활용) 순서.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="q-block">
+      <span class="q-type-badge badge-서술형">서술형 1</span>
+      <div class="q-stem">6. 다음 빈칸을 채워 글의 핵심 주장을 완성하시오.</div>
+      <div class="cond-box"><span>【조건】</span> 본문의 표현을 활용하여 영어로 쓸 것</div>
+      <div class="q-passage-box">Internet sites maintained by ________, ________, and ________ should be the first source for public information on foods, nutrition, and health.</div>
+      <div class="answer-lines"><span class="answer-line"></span></div>
+    </div>
+    <div class="q-block">
+      <span class="q-type-badge badge-서술형">서술형 2</span>
+      <div class="q-stem">7. 인터넷 건강 정보가 신뢰하기 어려운 이유 두 가지를 본문에서 찾아 우리말로 서술하시오.</div>
+      <div class="cond-box"><span>【조건】</span> 각각 한 문장으로 쓸 것.</div>
+      <div class="answer-lines"><span class="answer-line"></span><span class="answer-line"></span></div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p2-s5">
+    <div class="ans-section-title">변형문제 정답 및 해설</div>
+    <div class="ans-row"><span class="ans-q-label">Q1</span><span class="ans-answer">②</span><span class="ans-exp">신뢰할 수 있는 증거 기반 출처를 활용해야 한다는 주장이 핵심 → ②.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q2</span><span class="ans-answer">②</span><span class="ans-exp">evidence-based — 지문 마지막 문장의 핵심 수식어.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q3</span><span class="ans-answer">④</span><span class="ans-exp">helpfully(부사) → helpful(형용사)로 수정해야 함. provide + 형용사 보어가 아니라 provide + 형용사 + 명사(facts)이므로 형용사가 맞음.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q4</span><span class="ans-answer">③</span><span class="ans-exp">본문 ④문장에 '정부 규제 기관에 의해 모니터링되지 않는다'고 명시 → ③이 불일치.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q5</span><span class="ans-answer">③</span><span class="ans-exp">(B) 미디어 의존 현황 → (C) 문제점(검토 미비·오류 정보) → (A) 해결책(신뢰 가능 사이트 활용) 순서.</span></div>
+    <div class="divider"></div>
+    <div class="ans-section-title">서술형 모범답안</div>
+    <div class="model-ans-box"><div class="ma-label">서술형 1</div><div class="ma-text">government agencies / universities (state extension services) / medical facilities</div></div>
+    <div class="model-ans-box"><div class="ma-label">서술형 2</div><div class="ma-text">① 많은 인터넷 건강 관련 글들이 영양 전문가의 검토를 받지 않아 정보의 신뢰성을 보장할 수 없다.<br>② 약초·의약품·건강 기기를 판매하는 사이트들은 정부 규제 기관의 모니터링을 받지 않아 오해를 불러일으키는 정보를 담고 있다.</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PASSAGE 4: 서번트 리더십
+════════════════════════════════════════════ -->
+<div class="passage-panel" id="panel-3">
+  <div class="passage-header">
+    <div class="passage-num">PASSAGE 04 · 주장파악</div>
+    <div class="passage-title">서번트 리더십과 솔선수범</div>
+    <div class="passage-topic">Lead by example and model what's important for your team</div>
+  </div>
+  <div class="section-tabs">
+    <button class="sec-tab active" onclick="switchSection(3,0)">① 문장분석</button>
+    <button class="sec-tab" onclick="switchSection(3,1)">② 문법총정리</button>
+    <button class="sec-tab" onclick="switchSection(3,2)">③ 전문해석</button>
+    <button class="sec-tab" onclick="switchSection(3,3)">④ 주제·구조</button>
+    <button class="sec-tab" onclick="switchSection(3,4)">⑤ 변형문제</button>
+    <button class="sec-tab" onclick="switchSection(3,5)">⑥ 정답지</button>
+  </div>
+  <div class="sec-panel active" id="p3-s0">
+    <div class="card">
+      <div class="sent-num">①</div>
+      <div class="sent-en">My business partner Charles and I embraced the servant leader's way of doing things.</div>
+      <div class="sent-slash">나의 비즈니스 파트너 찰스와 나는 / 받아들였다 / 서번트 리더의 방식을 / 일을 하는.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">동명사(전치사 목적어)</span><span class="g-text"><b>the way of doing things</b> — 전치사 of의 목적어로 동명사 doing. <br><span class="g-point">▶출제포인트: 전치사 뒤 동명사 필수 (to-v 불가) / the way of ~ing vs. the way to-v 비교</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">②</div>
+      <div class="sent-en">In other words, nothing was beneath us. We led by example and did the work.</div>
+      <div class="sent-slash">다시 말해, / 우리 아래에 있는 것은 아무것도 없었다. (못할 일이 없었다.) / 우리는 솔선수범했고 / 직접 일을 했다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">관용표현 lead by example</span><span class="g-text"><b>led by example</b> — '솔선수범하다'. 수능 빈칸·어휘 문제에서 자주 등장하는 표현. <br><span class="g-point">▶출제포인트: lead by example의 의미 추론 / nothing was beneath us = 못할 일이 없었다(관용적 해석)</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">③</div>
+      <div class="sent-en">When any new salesman came into the store, he would look around, notice Charles polishing some corner of the floor and me covered in flour, and assume the decision-maker was not present.</div>
+      <div class="sent-slash">어떤 새 영업사원이 가게에 들어오면 / 그는 둘러보고 / 찰스가 바닥 한 구석을 닦는 것을 알아채고 / 나는 밀가루를 뒤집어쓰고 있는 것을 / 그리고 의사결정자가 없다고 생각했다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">지각동사 notice + OC</span><span class="g-text"><b>notice Charles polishing / me covered</b> — notice + O + 현재분사(능동) / 과거분사(수동). <br><span class="g-point">▶출제포인트: 지각동사(see/notice/hear) + O + V원형 또는 -ing / 목적보어 능동·수동 구분</span></span></li>
+        <li class="grammar-item"><span class="g-tag">조동사 would (과거 습관)</span><span class="g-text"><b>would look around, notice ~ , and assume</b> — 과거의 반복적 습관. = used to. 세 동사가 would에 병렬 연결. <br><span class="g-point">▶출제포인트: 과거 습관 would vs. used to 차이 / 병렬 구조에서 would 뒤 동사원형 유지</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">④</div>
+      <div class="sent-en">He'd then hand off whatever he was selling to me and say, "Can you give this to the owner?"</div>
+      <div class="sent-slash">그는 그런 다음 건네주고는 했다 / 그가 팔고 있던 것이면 무엇이든 / 나에게 / 그리고 말했다, / "이것을 주인에게 전해줄 수 있나요?"</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">복합관계대명사 whatever</span><span class="g-text"><b>whatever he was selling</b> — whatever = anything that. 명사절로 hand off의 목적어. <br><span class="g-point">▶출제포인트: whatever(명사절/양보절) vs. whichever 구분 / whatever = no matter what</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">⑤</div>
+      <div class="sent-en">Now, if Charles and I had remained in the bakery for too long, we wouldn't have been able to grow and scale, so I'm not saying you should be sweeping the floors forever.</div>
+      <div class="sent-slash">이제, / 만약 찰스와 내가 베이커리에 너무 오래 머물러 있었다면 / 우리는 성장하고 확장할 수 없었을 것이다 / 그래서 나는 말하는 게 아니다 / 당신이 영원히 바닥을 쓸어야 한다고.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">가정법 과거완료</span><span class="g-text"><b>if ~ had remained ~ , wouldn't have been able to</b> — 「if + S + had p.p., S + would have p.p.」과거 반사실 가정. <br><span class="g-point">▶출제포인트: 가정법 과거완료 형태 / had remained → 과거에 머물지 않은 것이 사실</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">⑥⑦</div>
+      <div class="sent-en">It's more about modeling what's important. If cleanliness and details are important, be sure you aren't above doing the work and pitching in. Come into your workspace and ask how you can help. If it's clear your team is in the weeds, jump in without asking.</div>
+      <div class="sent-slash">그것은 더 많이 중요한 것을 모델링하는 것에 관한 것이다. / 청결과 세부 사항이 중요하다면, / 확실히 해라 / 당신이 일하는 것과 참여하는 것을 마다하지 않는다는 것을. / 당신의 작업 공간에 와서 / 어떻게 도울 수 있는지 물어봐라. / 팀이 어려움에 처해 있다면 / 묻지 않고 뛰어들어라.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">관계대명사 what (명사절)</span><span class="g-text"><b>what's important</b> — what = the thing that. modeling의 목적어 역할. <br><span class="g-point">▶출제포인트: what(선행사 포함) vs. that(선행사 필요) 구분</span></span></li>
+        <li class="grammar-item"><span class="g-tag">명령문 + be sure (that)</span><span class="g-text"><b>be sure you aren't above doing the work</b> — be sure + that절(접속사 that 생략). <br><span class="g-point">▶출제포인트: be sure + to-v / be sure + that절 용법 비교</span></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="sec-panel" id="p3-s1">
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">01</span><span class="gram-title">지각동사 notice + 목적격보어 (능동·수동)</span></div>
+      <div class="gram-body">③문장에서 notice + Charles polishing(능동 현재분사)과 me covered in flour(수동 과거분사)가 대조적으로 등장한다. 목적어와 보어의 능동·수동 관계에 따라 분사 형태가 결정된다.</div>
+      <div class="gram-evidence">notice Charles polishing some corner / me covered in flour</div>
+      <div class="gram-point">▶출제포인트: 목적어(Charles)가 polish하는 것 → 능동(polishing) / 목적어(me)가 cover되는 것 → 수동(covered)</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">02</span><span class="gram-title">조동사 would — 과거 습관 (병렬 구조)</span></div>
+      <div class="gram-body">③문장의 would look around, notice ~, and assume은 과거의 반복 행동을 나타내는 would가 세 동사에 걸쳐 병렬로 연결된다. would + 동사원형 형태를 유지.</div>
+      <div class="gram-evidence">would look around, notice Charles polishing …, and assume</div>
+      <div class="gram-point">▶출제포인트: 병렬 동사에서 would 반복 생략 가능 / would(과거 습관) vs. used to(과거 상태·습관)</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">03</span><span class="gram-title">복합관계대명사 whatever (= anything that)</span></div>
+      <div class="gram-body">④문장의 whatever he was selling은 '그가 팔고 있던 것이라면 무엇이든'의 의미로, whatever = anything that. 명사절 역할로 hand off의 목적어.</div>
+      <div class="gram-evidence">hand off whatever he was selling to me</div>
+      <div class="gram-point">▶출제포인트: whatever(명사절: ~하는 것은 무엇이든) vs. no matter what(양보절) 용법 구분</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">04</span><span class="gram-title">가정법 과거완료 (반사실 조건)</span></div>
+      <div class="gram-body">⑤문장의 if ~ had remained ~ , wouldn't have been able to grow는 과거 사실에 반하는 조건을 나타내는 가정법 과거완료이다. 실제로는 오래 머물지 않았음을 의미.</div>
+      <div class="gram-evidence">if Charles and I had remained in the bakery for too long, we wouldn't have been able to grow</div>
+      <div class="gram-point">▶출제포인트: if절 had p.p. + 주절 would have p.p. 형태 확인 / 혼합 가정법과 구분</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">05</span><span class="gram-title">관계대명사 what (선행사 포함, 명사절)</span></div>
+      <div class="gram-body">⑥문장의 what's important는 '중요한 것'이라는 의미로 선행사를 포함한 관계대명사 what이다. modeling의 목적어로 쓰인 명사절.</div>
+      <div class="gram-evidence">It's more about modeling what's important.</div>
+      <div class="gram-point">▶출제포인트: what(선행사 포함, 불완전절) vs. that(선행사 필요, 불완전절) 구분</div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p3-s2">
+    <div class="card"><div class="trans-text">나의 비즈니스 파트너 찰스와 나는 서번트 리더의 방식을 받아들였다. 다시 말해, 우리에게 못할 일이란 없었다. 우리는 솔선수범했고 직접 일을 했다. 어떤 새 영업사원이 가게에 들어오면, 그는 둘러보다가 찰스가 바닥 한 구석을 닦고 있고 나는 밀가루를 뒤집어쓰고 있다는 것을 알아채고, 의사결정자가 없다고 생각하곤 했다. 그런 다음 그는 자신이 팔고 있던 것이면 무엇이든 나에게 건네주며 "이것을 주인에게 전해줄 수 있나요?"라고 말하곤 했다. 물론 찰스와 내가 베이커리에서 너무 오래 머물렀다면, 우리는 성장하고 사업을 확장할 수 없었을 것이다. 그러므로 나는 당신이 영원히 바닥을 쓸어야 한다고 말하는 것이 아니다. 그것은 더 중요한 것을 몸소 보여주는 것에 관한 이야기이다. 청결과 세부 사항이 중요하다면, 직접 일에 참여하는 것을 마다하지 않아야 한다. 작업 공간에 와서 어떻게 도울 수 있는지 물어라. 팀이 어려움에 처해 있다면, 묻지 않고 바로 뛰어들어라.</div></div>
+  </div>
+  <div class="sec-panel" id="p3-s3">
+    <div class="topic-grid">
+      <div class="topic-card theme-blue"><div class="topic-card-label">주제</div><div class="topic-card-body">리더는 직접 일에 참여하여 중요한 가치를 솔선수범으로 보여주어야 한다.</div></div>
+      <div class="topic-card theme-green"><div class="topic-card-label">요지</div><div class="topic-card-body">서번트 리더십의 핵심은 직접 일하며 팀에게 중요한 것을 모델링하는 것이다.</div></div>
+      <div class="topic-card theme-gold"><div class="topic-card-label">제목</div><div class="topic-card-body">Lead by Doing: The Power of Servant Leadership</div></div>
+      <div class="topic-card theme-purple"><div class="topic-card-label">어조</div><div class="topic-card-body">경험 서술·교훈적 (Narrative & Didactic) — 개인 경험을 통해 리더십 원칙 제시</div></div>
+    </div>
+    <div class="struct-flow">
+      <div class="struct-step"><div class="struct-step-num">1</div><div class="struct-step-body"><div class="struct-step-role">사례 제시</div>찰스와 필자가 직접 일하는 서번트 리더십 실천 사례.</div></div>
+      <div class="struct-step"><div class="struct-step-num">2</div><div class="struct-step-body"><div class="struct-step-role">에피소드</div>영업사원이 필자를 직원으로 착각한 일화 — 솔선수범의 결과.</div></div>
+      <div class="struct-step"><div class="struct-step-num">3</div><div class="struct-step-body"><div class="struct-step-role">균형 잡기</div>단, 항상 현장에만 있으면 안 됨 — 성장·확장을 위한 균형 필요.</div></div>
+      <div class="struct-step"><div class="struct-step-num">4</div><div class="struct-step-body"><div class="struct-step-role">핵심 주장</div>중요한 것을 몸소 보여주어라 — 팀이 어려울 때 묻지 않고 참여하라.</div></div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p3-s4">
+    <div class="quiz-score-bar">
+      <div><div class="quiz-score-label">정답</div><div class="quiz-score-num">0</div></div>
+      <div class="quiz-score-total">/ 0문제 완료</div>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-주제">주제추론</span>
+      <div class="q-stem">1. 다음 글의 주제로 가장 적절한 것은?</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> the challenges of managing a bakery business<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> how to delegate tasks effectively as a leader<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> the importance of servant leadership and leading by example<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> strategies for expanding a small business quickly<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> why leaders should avoid hands-on work to focus on strategy<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문의 핵심 메시지는 서번트 리더십과 솔선수범(lead by example) → ③. ⑤는 지문 내용과 정반대의 함정 선지.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-빈칸">빈칸추론</span>
+      <div class="q-stem">2. 다음 빈칸에 들어갈 말로 가장 적절한 것은?</div>
+      <div class="q-passage-box">It's more about ________ what's important. If cleanliness and details are important, be sure you aren't above doing the work and pitching in.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> delegating<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> avoiding<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> modeling<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> questioning<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> measuring<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문 ⑥문장 "It's more about <b>modeling</b> what's important"에서 직접 확인. delegating(위임)은 지문의 핵심 메시지와 반대.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-어법">어법오류</span>
+      <div class="q-stem">3. 다음 밑줄 친 부분 중 어법상 틀린 것은?</div>
+      <div class="q-passage-box">When any new salesman came into the store, he would look around, ①notice Charles polishing some corner of the floor and me ②covering in flour, and ③assume the decision-maker was not present. If Charles and I ④had remained in the bakery for too long, we wouldn't have been able to grow. It's more about modeling ⑤what's important.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> notice<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">②</span> covering<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> assume<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> had remained<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> what's<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>me covered in flour — 나(me)는 밀가루에 <b>덮이는</b> 수동 관계이므로 과거분사 <b>covered</b>가 맞음. covering(능동 현재분사)으로 쓰면 '내가 밀가루를 덮는다'가 되어 의미 오류.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-불일치">내용불일치</span>
+      <div class="q-stem">4. 다음 글의 내용과 일치하지 않는 것은?</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> 찰스와 필자는 서번트 리더십을 직접 실천했다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">②</span> 영업사원들은 필자와 찰스를 의사결정자로 인식했다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> 찰스는 가게 바닥 청소를 직접 했다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> 필자는 리더가 바닥 청소를 영원히 해야 한다고 주장하지 않는다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> 팀이 어려움에 처하면 묻지 않고 바로 참여해야 한다고 조언한다.<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문 ③문장에서 영업사원은 의사결정자가 없다고 '착각(assume)'했음. 필자와 찰스를 의사결정자로 인식한 것이 아니라 직원으로 오해 → ② 불일치.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-순서">글의순서</span>
+      <div class="q-stem">5. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?</div>
+      <div class="q-passage-box">My business partner Charles and I embraced the servant leader's way of doing things. In other words, nothing was beneath us. We led by example and did the work.</div>
+      <div class="q-passage-box" style="margin-top:8px"><b>(A)</b> Now, if Charles and I had remained in the bakery for too long, we wouldn't have been able to grow and scale, so I'm not saying you should be sweeping the floors forever. It's more about modeling what's important.<br><br><b>(B)</b> He'd then hand off whatever he was selling to me and say, "Can you give this to the owner?"<br><br><b>(C)</b> When any new salesman came into the store, he would look around, notice Charles polishing some corner of the floor and me covered in flour, and assume the decision-maker was not present.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> (A) - (B) - (C)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> (A) - (C) - (B)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> (B) - (C) - (A)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> (C) - (A) - (B)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">⑤</span> (C) - (B) - (A)<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>(C) 영업사원의 착각 에피소드 → (B) "주인에게 전해달라" 대화(에피소드 결말) → (A) 교훈 및 핵심 주장 순서. (B)의 'He'd then'이 (C)의 상황을 직접 이음.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="q-block">
+      <span class="q-type-badge badge-서술형">서술형 1</span>
+      <div class="q-stem">6. 다음 빈칸을 채워 글의 핵심 주장을 완성하시오.</div>
+      <div class="cond-box"><span>【조건】</span> 본문의 표현을 그대로 활용할 것</div>
+      <div class="q-passage-box">A servant leader should ________ by ________ and be willing to ________ in when the team is in the weeds.</div>
+      <div class="answer-lines"><span class="answer-line"></span></div>
+    </div>
+    <div class="q-block">
+      <span class="q-type-badge badge-서술형">서술형 2</span>
+      <div class="q-stem">7. 필자가 '바닥을 영원히 쓸 필요는 없다'고 말한 이유를 본문 내용에 근거하여 우리말로 서술하시오.</div>
+      <div class="cond-box"><span>【조건】</span> 이유와 실제 목적을 함께 포함하여 2문장으로 쓸 것.</div>
+      <div class="answer-lines"><span class="answer-line"></span><span class="answer-line"></span></div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p3-s5">
+    <div class="ans-section-title">변형문제 정답 및 해설</div>
+    <div class="ans-row"><span class="ans-q-label">Q1</span><span class="ans-answer">③</span><span class="ans-exp">서번트 리더십과 솔선수범의 중요성이 핵심 주제 → ③.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q2</span><span class="ans-answer">③</span><span class="ans-exp">modeling — 지문 ⑥문장 'modeling what's important'에서 직접 확인.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q3</span><span class="ans-answer">②</span><span class="ans-exp">me covered in flour — 나(me)는 밀가루에 덮인 것이므로 수동 관계 → covered가 맞음. covering(능동)은 오류.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q4</span><span class="ans-answer">②</span><span class="ans-exp">영업사원들은 필자와 찰스를 '의사결정자가 아닌 직원'으로 착각했으므로 ②가 불일치.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q5</span><span class="ans-answer">⑤</span><span class="ans-exp">(C) 영업사원의 착각 → (B) "주인에게 전해달라" 에피소드 → (A) 균형과 핵심 교훈 순서.</span></div>
+    <div class="divider"></div>
+    <div class="ans-section-title">서술형 모범답안</div>
+    <div class="model-ans-box"><div class="ma-label">서술형 1</div><div class="ma-text">lead / example / jump (pitch)</div></div>
+    <div class="model-ans-box"><div class="ma-label">서술형 2</div><div class="ma-text">만약 리더가 현장 일에만 너무 오래 머물러 있으면 사업이 성장하고 확장하기 어렵기 때문이다. 중요한 것은 영원히 현장에 있는 것이 아니라 중요한 가치를 몸소 보여주는 '모델링(modeling)'에 있다.</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PASSAGE 5: 호흡과 운동
+════════════════════════════════════════════ -->
+<div class="passage-panel" id="panel-4">
+  <div class="passage-header">
+    <div class="passage-num">PASSAGE 05 · 주장파악</div>
+    <div class="passage-title">호흡 조절과 운동 수행 능력</div>
+    <div class="passage-topic">Athletes should practice slow breathing to manage arousal and recovery</div>
+  </div>
+  <div class="section-tabs">
+    <button class="sec-tab active" onclick="switchSection(4,0)">① 문장분석</button>
+    <button class="sec-tab" onclick="switchSection(4,1)">② 문법총정리</button>
+    <button class="sec-tab" onclick="switchSection(4,2)">③ 전문해석</button>
+    <button class="sec-tab" onclick="switchSection(4,3)">④ 주제·구조</button>
+    <button class="sec-tab" onclick="switchSection(4,4)">⑤ 변형문제</button>
+    <button class="sec-tab" onclick="switchSection(4,5)">⑥ 정답지</button>
+  </div>
+  <div class="sec-panel active" id="p4-s0">
+    <div class="card">
+      <div class="sent-num">①</div>
+      <div class="sent-en">Training and competition naturally speed the breath, which activates the sympathetic nervous system.</div>
+      <div class="sent-slash">훈련과 경쟁은 / 자연스럽게 호흡을 빠르게 한다 / 그리고 그것은 교감신경계를 활성화한다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">계속적 용법 which</span><span class="g-text"><b>, which activates the sympathetic nervous system</b> — 앞 절 전체를 선행사로 받는 계속적 관계대명사. = and it activates ~ <br><span class="g-point">▶출제포인트: 콤마+which(계속적) vs. which(한정적) 구분 / which 앞에 콤마 유무</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">②</div>
+      <div class="sent-en">In performance, this is acceptable because an athlete wants to produce adrenaline and compete and train in an aroused state.</div>
+      <div class="sent-slash">경기 중에는, / 이것은 받아들일 수 있다 / 왜냐하면 운동선수는 아드레날린을 분비하고 / 각성 상태에서 경쟁하고 훈련하기를 원하기 때문이다.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">이유 접속사 because</span><span class="g-text"><b>because an athlete wants to produce ~ and compete ~ and train</b> — because절 내 세 동사 병렬: produce / compete / train. <br><span class="g-point">▶출제포인트: wants to + 동사원형 병렬 연결 / because vs. because of(전치사) 혼동</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">③</div>
+      <div class="sent-en">However, it is equally important for an athlete to learn how to mentally and physically downshift from the acute sympathetic activity experienced in sport, and outside of performance focus their attention on slow breathing to reduce the sympathetic activity and resolve the fight-or-flight state.</div>
+      <div class="sent-slash">그러나, / ~하는 것도 똑같이 중요하다 / 운동선수가 배우는 것이 / 정신적으로 그리고 신체적으로 속도를 늦추는 방법을 / 스포츠에서 경험되는 급격한 교감 신경 활동으로부터 / 그리고 경기 외에서는 / 느린 호흡에 집중하는 것을 / 교감 신경 활동을 줄이고 투쟁-도피 상태를 해소하기 위해.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">가주어 it ~ for + O + to-v</span><span class="g-text"><b>it is equally important for an athlete to learn</b> — 가주어 it, 의미상 주어 for an athlete, 진주어 to learn. <br><span class="g-point">▶출제포인트: for + 목적격(의미상 주어) + to-v / it is 형용사 + to-v 진주어 구조</span></span></li>
+        <li class="grammar-item"><span class="g-tag">간접의문문 how to-v</span><span class="g-text"><b>how to mentally and physically downshift</b> — 「의문사 + to-v」= 명사구 역할. learn의 목적어. <br><span class="g-point">▶출제포인트: how to-v = how S should-v / what to, when to, where to와 동일 구조</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">④</div>
+      <div class="sent-en">In the Feinstein Institutes study, participants were able to use the pace of their breathing to activate specific regions of the brain.</div>
+      <div class="sent-slash">파인스타인 연구소 연구에서 / 참가자들은 사용할 수 있었다 / 호흡 속도를 / 뇌의 특정 영역을 활성화하기 위해.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">to부정사(부사적-목적)</span><span class="g-text"><b>to activate specific regions of the brain</b> — '뇌의 특정 영역을 활성화하기 위해'라는 목적. <br><span class="g-point">▶출제포인트: be able to-v(능력) vs. to-v(목적) 구분 / use A to-v = use A in order to-v</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">⑤</div>
+      <div class="sent-en">In a performance realm, this means athletes can use breathing pace to manage their state of arousal.</div>
+      <div class="sent-slash">경기 영역에서, / 이것은 의미한다 / 운동선수들이 호흡 속도를 사용할 수 있다는 것을 / 각성 상태를 관리하기 위해.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">that절 목적어 (접속사 생략)</span><span class="g-text"><b>this means (that) athletes can use</b> — that 접속사가 생략된 명사절 목적어. <br><span class="g-point">▶출제포인트: mean + that절 / that 생략 여부 판단</span></span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sent-num">⑥⑦</div>
+      <div class="sent-en">During training and competition, the breathing rate increases with the introduction of adrenaline, and athletes must be able to control this to be able to adapt and recover. One way is to practice slower breathing protocols outside of training and competition.</div>
+      <div class="sent-slash">훈련과 경기 중 / 호흡률은 증가한다 / 아드레날린의 유입과 함께 / 그리고 운동선수들은 반드시 이것을 통제할 수 있어야 한다 / 적응하고 회복하기 위해. / 한 가지 방법은 / 더 느린 호흡 프로토콜을 연습하는 것이다 / 훈련과 경기 밖에서.</div>
+      <ul class="grammar-list">
+        <li class="grammar-item"><span class="g-tag">must be able to (의무+능력)</span><span class="g-text"><b>must be able to control this</b> — must(의무) + be able to(능력). can 대신 be able to를 써야 조동사 중복을 피함. <br><span class="g-point">▶출제포인트: must can(불가) → must be able to(가능) / to be able to adapt(목적)</span></span></li>
+        <li class="grammar-item"><span class="g-tag">주격보어 to부정사</span><span class="g-text"><b>One way is to practice slower breathing protocols</b> — 주어(One way) + be + to-v(보어). 핵심 주장 문장. <br><span class="g-point">▶출제포인트: 주격보어 to-v / to practice vs. practicing 선택</span></span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="sec-panel" id="p4-s1">
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">01</span><span class="gram-title">계속적 용법 관계대명사 which (앞 절 전체 수식)</span></div>
+      <div class="gram-body">①문장의 , which activates the sympathetic nervous system은 앞 절(훈련과 경쟁이 호흡을 빠르게 함) 전체를 받는 계속적 관계대명사이다. and it activates로 교체 가능.</div>
+      <div class="gram-evidence">Training and competition naturally speed the breath, which activates the sympathetic nervous system.</div>
+      <div class="gram-point">▶출제포인트: 콤마+which(계속적, 앞 절 전체 수식) vs. 콤마 없는 which(한정적, 선행사 수식)</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">02</span><span class="gram-title">가주어 it ~ for + 의미상 주어 + to-v</span></div>
+      <div class="gram-body">③문장의 it is equally important for an athlete to learn은 가주어-진주어 구문이다. for an athlete는 to learn의 의미상 주어로 목적격을 취한다.</div>
+      <div class="gram-evidence">it is equally important for an athlete to learn how to … downshift</div>
+      <div class="gram-point">▶출제포인트: for + 목적격(의미상 주어) / of + 목적격(사람의 성질 형용사: kind, wise, rude 등)과 구분</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">03</span><span class="gram-title">의문사 + to부정사 (간접의문문)</span></div>
+      <div class="gram-body">③문장의 how to mentally and physically downshift는 '어떻게 속도를 늦출지'라는 의미로, 「의문사 + to-v」 구조가 learn의 목적어 역할을 한다.</div>
+      <div class="gram-evidence">learn how to mentally and physically downshift</div>
+      <div class="gram-point">▶출제포인트: how to-v = how S should-v / learn what to, when to, where to 등 동일 구조 비교</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">04</span><span class="gram-title">must be able to (조동사 충돌 회피)</span></div>
+      <div class="gram-body">⑥문장의 must be able to control은 조동사 must 뒤에 또 다른 조동사 can을 쓸 수 없으므로 be able to로 대체한 구조이다. must can은 문법적으로 불가.</div>
+      <div class="gram-evidence">athletes must be able to control this to be able to adapt and recover</div>
+      <div class="gram-point">▶출제포인트: must can(불가) → must be able to(가능) / 조동사 중복 불가 규칙</div>
+    </div>
+    <div class="gram-item">
+      <div class="gram-header"><span class="gram-no">05</span><span class="gram-title">주격보어 to부정사 (One way is to-v)</span></div>
+      <div class="gram-body">⑦문장의 One way is to practice slower breathing protocols는 주어(One way) + be동사 + to-v(보어) 구조로, 필자의 핵심 제안을 담고 있다.</div>
+      <div class="gram-evidence">One way is to practice slower breathing protocols outside of training and competition.</div>
+      <div class="gram-point">▶출제포인트: 주격보어 to-v / to practice(진행의 의미 X) vs. practicing(동명사 보어) 교체 가능 여부</div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p4-s2">
+    <div class="card"><div class="trans-text">훈련과 경쟁은 자연스럽게 호흡을 빠르게 하며, 이는 교감 신경계를 활성화시킨다. 경기 중에는 이것이 용인되는데, 운동선수가 아드레날린을 분비하고 각성 상태에서 경쟁하고 훈련하기를 원하기 때문이다. 그러나 운동선수가 스포츠에서 경험하는 급격한 교감 신경 활동에서 정신적·신체적으로 속도를 늦추는 방법을 배우고, 경기 외의 시간에는 느린 호흡에 주의를 집중하여 교감 신경 활동을 줄이고 투쟁-도피 상태를 해소하는 것 또한 똑같이 중요하다. 파인스타인 연구소 연구에서 참가자들은 호흡 속도를 이용해 뇌의 특정 영역을 활성화할 수 있었다. 경기 영역에서 이것은 운동선수들이 호흡 속도를 이용해 각성 상태를 관리할 수 있음을 의미한다. 훈련과 경기 중에는 아드레날린 유입과 함께 호흡률이 증가하며, 운동선수들은 적응하고 회복하기 위해 반드시 이를 통제할 수 있어야 한다. 한 가지 방법은 훈련과 경기 외의 시간에 더 느린 호흡 프로토콜을 연습하는 것이다.</div></div>
+  </div>
+  <div class="sec-panel" id="p4-s3">
+    <div class="topic-grid">
+      <div class="topic-card theme-blue"><div class="topic-card-label">주제</div><div class="topic-card-body">운동선수는 훈련·경기 외의 시간에 느린 호흡 연습을 통해 각성 상태를 조절해야 한다.</div></div>
+      <div class="topic-card theme-green"><div class="topic-card-label">요지</div><div class="topic-card-body">경기 중 빠른 호흡만큼, 경기 외에서의 느린 호흡 연습이 운동 수행에 똑같이 중요하다.</div></div>
+      <div class="topic-card theme-gold"><div class="topic-card-label">제목</div><div class="topic-card-body">Breathing Control: The Key to Athletic Performance and Recovery</div></div>
+      <div class="topic-card theme-purple"><div class="topic-card-label">어조</div><div class="topic-card-body">설명적·권고적 (Expository & Advisory) — 과학적 근거를 바탕으로 실질적 훈련법 제안</div></div>
+    </div>
+    <div class="struct-flow">
+      <div class="struct-step"><div class="struct-step-num">1</div><div class="struct-step-body"><div class="struct-step-role">현상 설명</div>훈련·경쟁은 호흡을 빠르게 해 교감신경계를 활성화함.</div></div>
+      <div class="struct-step"><div class="struct-step-num">2</div><div class="struct-step-body"><div class="struct-step-role">문제 + 주장</div>경기 외에서는 느린 호흡을 통해 교감 신경 활동을 줄이는 것이 동등하게 중요함.</div></div>
+      <div class="struct-step"><div class="struct-step-num">3</div><div class="struct-step-body"><div class="struct-step-role">연구 근거</div>파인스타인 연구 — 호흡 속도로 뇌의 특정 영역 활성화 가능.</div></div>
+      <div class="struct-step"><div class="struct-step-num">4</div><div class="struct-step-body"><div class="struct-step-role">해결책 제시</div>훈련·경기 외의 시간에 느린 호흡 프로토콜 연습이 해답.</div></div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p4-s4">
+    <div class="quiz-score-bar">
+      <div><div class="quiz-score-label">정답</div><div class="quiz-score-num">0</div></div>
+      <div class="quiz-score-total">/ 0문제 완료</div>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-주제">주제추론</span>
+      <div class="q-stem">1. 다음 글의 주제로 가장 적절한 것은?</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> the role of adrenaline in enhancing athletic performance<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> why athletes should avoid the fight-or-flight response<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> the importance of practicing slow breathing outside of competition<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> how the sympathetic nervous system affects brain activity<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> the benefits of high-intensity training on breathing capacity<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>마지막 문장 "One way is to practice slower breathing protocols outside of training and competition"이 핵심 주장 → ③. ①은 경기 중 아드레날린이 언급되지만 핵심이 아님.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-빈칸">빈칸추론</span>
+      <div class="q-stem">2. 다음 빈칸에 들어갈 말로 가장 적절한 것은?</div>
+      <div class="q-passage-box">However, it is equally important for an athlete to learn how to mentally and physically downshift from the acute sympathetic activity, and outside of performance focus their attention on slow breathing to ________ the sympathetic activity and resolve the fight-or-flight state.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> increase<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> measure<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> reduce<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> maintain<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> replace<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문 ③문장 "to <b>reduce</b> the sympathetic activity and resolve the fight-or-flight state"에서 직접 확인. increase(증가)는 문맥상 정반대 의미.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-어법">어법오류</span>
+      <div class="q-stem">3. 다음 밑줄 친 부분 중 어법상 틀린 것은?</div>
+      <div class="q-passage-box">Training and competition naturally speed the breath, ①which activates the sympathetic nervous system. ②It is equally important for an athlete to learn how to downshift. In the Feinstein Institutes study, participants were able ③using the pace of their breathing to activate specific regions of the brain. Athletes must ④be able to control this to adapt and recover. One way ⑤is to practice slower breathing protocols outside of training.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> which<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> It is equally important<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> using<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> be able to<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> is<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>were able to 뒤에는 <b>동사원형</b>이 필요. using(동명사) → <b>use</b>로 수정해야 함. be able to는 조동사 역할이므로 뒤에 동사원형 필수.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-불일치">내용불일치</span>
+      <div class="q-stem">4. 다음 글의 내용과 일치하지 않는 것은?</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> 훈련과 경쟁은 자연스럽게 호흡을 빠르게 하여 교감 신경계를 활성화한다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> 경기 중 각성 상태에서 훈련하는 것은 운동선수에게 용인될 수 있다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">③</span> 파인스타인 연구소 연구에서 참가자들은 호흡 속도로 뇌 특정 영역을 활성화할 수 있었다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">④</span> 필자는 훈련 중에 느린 호흡 프로토콜을 연습해야 한다고 권장한다.<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> 운동선수는 아드레날린 도입 시 증가하는 호흡률을 통제할 수 있어야 한다.<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>지문 ⑦문장 "practice slower breathing protocols <b>outside of</b> training and competition"이라고 명시 → ④ '훈련 중에'가 불일치. 훈련과 경기 <b>밖</b>에서 연습해야 함.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="quiz-block">
+      <span class="q-type-badge badge-순서">글의순서</span>
+      <div class="q-stem">5. 주어진 글 다음에 이어질 글의 순서로 가장 적절한 것은?</div>
+      <div class="q-passage-box">Training and competition naturally speed the breath, which activates the sympathetic nervous system. In performance, this is acceptable because an athlete wants to produce adrenaline and compete in an aroused state.</div>
+      <div class="q-passage-box" style="margin-top:8px"><b>(A)</b> In the Feinstein Institutes study, participants were able to use the pace of their breathing to activate specific regions of the brain. This means athletes can use breathing pace to manage their state of arousal.<br><br><b>(B)</b> However, it is equally important for an athlete to learn how to mentally and physically downshift from the acute sympathetic activity, and focus their attention on slow breathing to reduce it outside of performance.<br><br><b>(C)</b> During training and competition, the breathing rate increases with the introduction of adrenaline, and athletes must be able to control this to adapt and recover. One way is to practice slower breathing protocols outside of training.</div>
+      <ul class="quiz-options">
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">①</span> (A) - (B) - (C)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">②</span> (A) - (C) - (B)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="true"  onclick="selectOpt(this)"><span class="opt-num">③</span> (B) - (A) - (C)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">④</span> (B) - (C) - (A)<span class="opt-icon"></span></li>
+        <li class="quiz-opt" data-correct="false" onclick="selectOpt(this)"><span class="opt-num">⑤</span> (C) - (A) - (B)<span class="opt-icon"></span></li>
+      </ul>
+      <div class="quiz-exp"><div class="exp-label">💡 해설</div>(B) 경기 외 느린 호흡의 중요성 제시(However로 전환) → (A) 파인스타인 연구 근거(뇌 활성화) → (C) 구체적 실천법(느린 호흡 프로토콜) 순서.</div>
+      <button class="quiz-reset-btn" onclick="resetQuiz(this)">↺ 다시풀기</button>
+    </div>
+
+    <div class="q-block">
+      <span class="q-type-badge badge-서술형">서술형 1</span>
+      <div class="q-stem">6. 다음 빈칸을 채워 글의 핵심 주장을 완성하시오.</div>
+      <div class="cond-box"><span>【조건】</span> 본문의 표현을 활용하여 영어로 쓸 것</div>
+      <div class="q-passage-box">One way for athletes to manage their state of arousal is to practice ________ breathing protocols ________ of training and competition.</div>
+      <div class="answer-lines"><span class="answer-line"></span></div>
+    </div>
+    <div class="q-block">
+      <span class="q-type-badge badge-서술형">서술형 2</span>
+      <div class="q-stem">7. 파인스타인 연구소 연구 결과가 운동선수에게 갖는 의미를 본문에 근거하여 우리말로 서술하시오.</div>
+      <div class="cond-box"><span>【조건】</span> '호흡 속도'와 '각성 상태 관리'를 반드시 포함하여 2문장으로 쓸 것.</div>
+      <div class="answer-lines"><span class="answer-line"></span><span class="answer-line"></span></div>
+    </div>
+  </div>
+  <div class="sec-panel" id="p4-s5">
+    <div class="ans-section-title">변형문제 정답 및 해설</div>
+    <div class="ans-row"><span class="ans-q-label">Q1</span><span class="ans-answer">③</span><span class="ans-exp">경기 외 느린 호흡 연습의 중요성이 핵심 → ③.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q2</span><span class="ans-answer">③</span><span class="ans-exp">reduce — 지문 ③문장 'to reduce the sympathetic activity'에서 직접 확인.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q3</span><span class="ans-answer">③</span><span class="ans-exp">were able to 뒤에는 동사원형이 와야 함. using → use로 수정.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q4</span><span class="ans-answer">④</span><span class="ans-exp">본문은 '훈련과 경기 밖(outside of training and competition)'에서 느린 호흡을 연습하라고 권장 → '훈련 중'은 불일치.</span></div>
+    <div class="ans-row"><span class="ans-q-label">Q5</span><span class="ans-answer">③</span><span class="ans-exp">(B) 경기 외 느린 호흡의 중요성 → (A) 파인스타인 연구 근거 → (C) 구체적 해결책(느린 호흡 프로토콜) 순서.</span></div>
+    <div class="divider"></div>
+    <div class="ans-section-title">서술형 모범답안</div>
+    <div class="model-ans-box"><div class="ma-label">서술형 1</div><div class="ma-text">slower / outside</div></div>
+    <div class="model-ans-box"><div class="ma-label">서술형 2</div><div class="ma-text">파인스타인 연구에서 참가자들이 호흡 속도를 이용해 뇌의 특정 영역을 활성화할 수 있다는 것이 증명되었다. 이는 운동선수들이 호흡 속도를 조절함으로써 자신의 각성 상태를 능동적으로 관리할 수 있음을 의미한다.</div></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+/* ── 탭 전환 ── */
+function switchPassage(idx) {
+  document.querySelectorAll('.passage-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  document.querySelectorAll('.passage-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+}
+function switchSection(passageIdx, secIdx) {
+  const panel = document.getElementById('panel-'+passageIdx);
+  panel.querySelectorAll('.sec-panel').forEach((s,i) => s.classList.toggle('active', i===secIdx));
+  panel.querySelectorAll('.sec-tab').forEach((t,i) => t.classList.toggle('active', i===secIdx));
+}
+
+/* ── 퀴즈 엔진 ── */
+function selectOpt(el, correct, explanation) {
+  const block = el.closest('.quiz-block');
+  if (block.dataset.answered) return;
+  block.dataset.answered = '1';
+
+  const opts = block.querySelectorAll('.quiz-opt');
+  const isCorrect = el.dataset.correct === 'true';
+
+  opts.forEach(o => {
+    o.classList.add('disabled');
+    if (o.dataset.correct === 'true') {
+      o.classList.add('correct');
+      o.querySelector('.opt-icon').textContent = '✓';
+    }
+  });
+  if (!isCorrect) {
+    el.classList.add('wrong');
+    el.querySelector('.opt-icon').textContent = '✗';
+  }
+
+  // 해설 표시
+  const exp = block.querySelector('.quiz-exp');
+  exp.classList.add('show');
+
+  // 다시풀기 버튼
+  const btn = block.querySelector('.quiz-reset-btn');
+  btn.classList.add('show');
+
+  // 점수 갱신
+  updateScore(block.closest('.sec-panel'), isCorrect);
+}
+
+function resetQuiz(btn) {
+  const block = btn.closest('.quiz-block');
+  delete block.dataset.answered;
+  block.querySelectorAll('.quiz-opt').forEach(o => {
+    o.classList.remove('correct','wrong','disabled');
+    o.querySelector('.opt-icon').textContent = '';
+  });
+  block.querySelector('.quiz-exp').classList.remove('show');
+  btn.classList.remove('show');
+  recalcScore(block.closest('.sec-panel'));
+}
+
+function updateScore(panel, isCorrect) {
+  const bar = panel.querySelector('.quiz-score-bar');
+  if (!bar) return;
+  const answered = panel.querySelectorAll('.quiz-block[data-answered]').length;
+  const correct  = panel.querySelectorAll('.quiz-opt.correct').length;
+  // correct 중 실제로 맞힌 것만: wrong이 없는 block
+  const correctCount = [...panel.querySelectorAll('.quiz-block[data-answered]')]
+    .filter(b => !b.querySelector('.quiz-opt.wrong')).length;
+  bar.querySelector('.quiz-score-num').textContent = correctCount;
+  bar.querySelector('.quiz-score-total').textContent = '/ ' + answered + '문제 완료';
+}
+
+function recalcScore(panel) {
+  const bar = panel.querySelector('.quiz-score-bar');
+  if (!bar) return;
+  const answered = panel.querySelectorAll('.quiz-block[data-answered]').length;
+  const correctCount = [...panel.querySelectorAll('.quiz-block[data-answered]')]
+    .filter(b => !b.querySelector('.quiz-opt.wrong')).length;
+  bar.querySelector('.quiz-score-num').textContent = correctCount;
+  bar.querySelector('.quiz-score-total').textContent = '/ ' + answered + '문제 완료';
+}
+</script>
+</body>
+</html>
